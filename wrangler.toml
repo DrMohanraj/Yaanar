@@ -1,0 +1,14 @@
+# Cloudflare Pages அமைப்பு (build command எதுவும் தேவையில்லை; output அடைவு: public)
+name = "yaanar"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "public"
+
+# Workers AI (AI பொருண்மைத் தேடல் + தேடல் குறியீடு)
+[ai]
+binding = "AI"
+
+[vars]
+GITHUB_REPO = "உங்கள்-github-பெயர்/yaanar"   # எ.கா. "mohan/yaanar"
+GITHUB_BRANCH = "main"
+ALLOWED_USERS = "உங்கள்-github-பெயர்"          # பலர் எனில் கமாவால் பிரிக்கவும்
+GITHUB_CLIENT_ID = "உங்கள்-oauth-app-client-id"

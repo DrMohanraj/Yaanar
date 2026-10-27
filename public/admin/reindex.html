@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>தேடல் குறியீடு — யாணர் நிர்வாகம்</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Jost:wght@300;400;500&family=Noto+Sans+Tamil:wght@300;400;500;600&family=Noto+Serif+Tamil:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="/">யாணர்</a><span class="muted">நிர்வாகம்</span><span class="sp"></span><a class="btn sm" href="/admin/">← நிர்வாகப் பக்கம்</a></header>
+<main class="wrap" id="main">
+  <h1>தேடல் குறியீட்டைப் புதுப்பி</h1>
+  <p class="note">புதிய நேர்காணலைச் சேர்த்த பிறகோ, பதில்களை மாற்றிய பிறகோ இங்கே புதுப்பிக்கவும். சொல் தேடலுக்கான பகுதிகளும், AI தேடலுக்கான வெக்டர்களும் GitHub-ல் பதிவாகி, Cloudflare தானாக மீண்டும் வெளியிடும் (1–2 நிமிடம்).</p>
+  <p><button class="btn solid" id="go">தேடல் குறியீட்டைப் புதுப்பி</button></p>
+  <pre id="log" class="muted" style="white-space:pre-wrap"></pre>
+</main>
+<script>
+const log = document.getElementById("log"), go = document.getElementById("go");
+fetch("/api/auth/me").then(r => { if (!r.ok) throw 0; }).catch(() => {
+  document.getElementById("main").innerHTML = '<p>முதலில் <a href="/admin/">உள்நுழைக</a>.</p>';
+});
+go.onclick = async () => {
+  go.disabled = true; log.textContent = "புதுப்பிக்கிறது… (நேர்காணல்கள் அதிகமாக இருந்தால் சில நிமிடங்கள் ஆகலாம்)";
+  try {
+    const r = await fetch("/api/reindex", { method: "POST" });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || r.status);
+    log.textContent = `முடிந்தது ✓\nபகுதிகள்: ${j.chunks}\nAI வெக்டர்கள்: ${j.embedded}\n${j.note || ""}`;
+  } catch (e) { log.textContent = "பிழை: " + e.message; }
+  go.disabled = false;
+};
+</script>
+</body>
+</html>
