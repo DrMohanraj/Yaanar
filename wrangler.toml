@@ -1,14 +1,23 @@
-# Cloudflare Pages அமைப்பு (build command எதுவும் தேவையில்லை; output அடைவு: public)
+# Cloudflare Worker அமைப்பு (build command எதுவும் தேவையில்லை; deploy: npx wrangler deploy)
 name = "yaanar"
+main = "src/worker.js"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = "public"
+# Dashboard-ல் அமைத்த மாறிகளை deploy அழிக்காமல் வைத்திருக்க (எ.கா. GITHUB_CLIENT_ID)
+keep_vars = true
+
+# நிலையான தளம்: public/ ; /api/* மட்டும் Worker குறியீட்டுக்கு
+[assets]
+directory = "public"
+binding = "ASSETS"
+not_found_handling = "404-page"
+run_worker_first = ["/api/*"]
 
 # Workers AI (AI பொருண்மைத் தேடல் + தேடல் குறியீடு)
 [ai]
 binding = "AI"
 
 [vars]
-GITHUB_REPO = "உங்கள்-github-பெயர்/yaanar"   # எ.கா. "mohan/yaanar"
+GITHUB_REPO = "DrMohanraj/Yaanar"
 GITHUB_BRANCH = "main"
-ALLOWED_USERS = "உங்கள்-github-பெயர்"          # பலர் எனில் கமாவால் பிரிக்கவும்
-GITHUB_CLIENT_ID = "உங்கள்-oauth-app-client-id"
+ALLOWED_USERS = "DrMohanraj"          # பலர் எனில் கமாவால் பிரிக்கவும்
+# GITHUB_CLIENT_ID: Cloudflare → yaanar → Settings → Variables-ல் அமைக்கவும் (அல்லது இங்கே இடவும்)
