@@ -23,6 +23,14 @@ const Y = (() => {
     return `${MONTHS[(+m || 1) - 1]} ${y}`;
   }
 
+  const MONTHS_FULL = ["ஜனவரி", "பிப்ரவரி", "மார்ச்", "ஏப்ரல்", "மே", "ஜூன்", "ஜூலை", "ஆகஸ்ட்", "செப்டம்பர்", "அக்டோபர்", "நவம்பர்", "டிசம்பர்"];
+  function fmtFull(d) {
+    if (!d) return "";
+    const [y, m, day] = d.split("-");
+    return `${day ? +day + " " : ""}${MONTHS_FULL[(+m || 1) - 1]} ${y}`;
+  }
+  const people = (iv) => (iv.interviewers || []).map((x) => String(x).trim()).filter(Boolean).slice(0, 2);
+
   async function load() {
     const [site, data] = await Promise.all([json("/data/site.json"), json("/data/interviews.json")]);
     const list = (data.interviews || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
@@ -47,14 +55,12 @@ const Y = (() => {
   function topbar(ctx, active) {
     const items = navItems(ctx).slice(0, 4);
     return `<header class="topbar">
+      <button class="menu-btn" aria-label="மெனு" aria-expanded="false">${icons.menu("lg primary")}</button>
       <a class="brand" href="/">${esc(ctx.site.title)}</a>
       <nav class="nav-inline label" aria-label="முதன்மை மெனு">
         ${items.map((n) => `<a href="${n.href}" ${n.key === active || n.href.replace(".html", "") === "/" + active ? 'aria-current="page"' : ""}>${n.t}</a>`).join("")}
       </nav>
-      <div class="topicons">
-        <a href="/search.html" aria-label="ஆய்வுத் தேடல்">${icons.search()}</a>
-        <button class="menu-btn" aria-label="மெனு" aria-expanded="false">${icons.menu("lg primary")}</button>
-      </div>
+      <div class="topicons"><a href="/search.html" aria-label="ஆய்வுத் தேடல்">${icons.search()}</a></div>
     </header>`;
   }
 
@@ -116,11 +122,12 @@ const Y = (() => {
   function card(iv, cls = "gcard") {
     return `<a class="${cls}" href="${ivUrl(iv.id)}">
       <div class="imgwrap"><img src="${esc(iv.photo)}" alt="${esc(iv.name)}" loading="lazy"></div>
-      <div class="meta"><span class="catname">${esc(iv.category)}</span><i></i><span class="muted">${esc(fmtDate(iv.date))}</span></div>
+      <div class="meta"><span class="catname">${esc(iv.category)}</span><i></i><span class="muted">${esc(fmtFull(iv.date))}</span></div>
       <div class="story"><div><h3>${esc(iv.title)}</h3><p>${esc(iv.name)}</p></div>${icons.arrow("lg")}</div>
       ${iv.summary ? `<p class="sum">${esc(iv.summary)}</p>` : ""}
+      ${people(iv).length ? `<p class="by"><span>நேர்காணல்</span>${people(iv).map(esc).join(" · ")}</p>` : ""}
     </a>`;
   }
 
-  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, ivUrl, fmtDate, card };
+  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, ivUrl, fmtDate, fmtFull, people, card };
 })();

@@ -89,6 +89,8 @@
       <div class="row3"><div><label>வகை</label><input type="text" list="cats" data-p="category" value="${e(iv.category)}"></div>
         <div><label>நேர்காணல் தேதி</label><input type="date" data-p="date" value="${e(iv.date)}"></div>
         <div><label>அடையாளம் (ID — ஆங்கில எழுத்துகள்)</label><input type="text" data-p="id" value="${e(iv.id)}" ${S.savedIds?.has(iv.id) ? "readonly" : ""}></div></div>
+      <div class="row2"><div><label>நேர்காணல் எடுத்தவர் 1</label><input type="text" data-iw="0" value="${e((iv.interviewers || [])[0] || "")}"></div>
+        <div><label>நேர்காணல் எடுத்தவர் 2 (தேவையெனில்)</label><input type="text" data-iw="1" value="${e((iv.interviewers || [])[1] || "")}"></div></div>
       <label>நேர்காணல் தலைப்பு</label><input type="text" data-p="title" value="${e(iv.title)}">
       <label>புகைப்படம்</label>
       <div class="photo"><img id="ph" src="${e(iv.photo)}" alt=""><div style="flex:1">
@@ -168,6 +170,7 @@
     if (!/^[a-z0-9][a-z0-9-]*$/i.test(iv.id)) return toast("ID-ல் ஆங்கில எழுத்து, எண், '-' மட்டும் இருக்க வேண்டும்.", true);
     if (ivList().filter((i) => i.id === iv.id).length > 1) return toast("இந்த ID ஏற்கெனவே உள்ளது.", true);
     iv.heroLines = (iv.heroLines || []).map((x) => x.trim()).filter(Boolean);
+    iv.interviewers = (iv.interviewers || []).map((x) => String(x).trim()).filter(Boolean).slice(0, 2);
     iv.qa = iv.qa.filter((x) => x.q.trim() || x.a.trim());
     S.busy = true;
     try {
@@ -222,6 +225,9 @@
     if (t.dataset.p !== undefined && iv) {
       iv[t.dataset.p] = t.value; markDirty("ivDirty");
       if (t.dataset.p === "photo") document.getElementById("ph").src = t.value;
+    } else if (t.dataset.iw !== undefined && iv) {
+      const arr = [0, 1].map((k) => (k === +t.dataset.iw ? t.value : (iv.interviewers || [])[k] || ""));
+      iv.interviewers = arr; markDirty("ivDirty");
     } else if (t.dataset.hero !== undefined && iv) {
       iv.heroLines = iv.heroLines || []; iv.heroLines[+t.dataset.hero] = t.value; markDirty("ivDirty");
     } else if (t.dataset.qa !== undefined && iv) {
@@ -240,7 +246,7 @@
     if (act === "tab") { S.tab = b.dataset.t; render(); }
     else if (act === "open") { S.tab = "iv"; S.cur = b.dataset.id; render(); window.scrollTo(0, 0); }
     else if (act === "new") {
-      const n = { id: "iv-" + Date.now().toString(36), name: "புதிய எழுத்தாளர்", period: "", date: today(), category: cats()[0] || "", photo: "/assets/img/writer-1.jpg", title: "", summary: "", intro: "", heroLines: [], qa: Array.from({ length: 20 }, () => ({ q: "", a: "", hl: "" })) };
+      const n = { id: "iv-" + Date.now().toString(36), name: "புதிய எழுத்தாளர்", period: "", date: today(), category: cats()[0] || "", photo: "/assets/img/writer-1.jpg", title: "", summary: "", intro: "", heroLines: [], interviewers: [], qa: Array.from({ length: 20 }, () => ({ q: "", a: "", hl: "" })) };
       ivList().unshift(n); S.cur = n.id; S.ivDirty = true; render(); window.scrollTo(0, 0);
     }
     else if (act === "qa-add") { iv.qa.push({ q: "", a: "", hl: "" }); S.ivDirty = true; render(); }

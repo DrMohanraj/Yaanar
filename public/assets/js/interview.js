@@ -31,7 +31,11 @@ Y.boot((ctx) => {
           <span class="rule" style="margin-top:.75rem"></span>
           <h1>${esc(iv.name)}</h1>
           <p class="ttl">${esc(iv.title)}</p>
-          <p class="meta"><span>${esc(iv.period || "")}</span><span>நேர்காணல்: ${esc(Y.fmtDate(iv.date))}</span><span>${qa.length} கேள்விகள்</span></p>
+          <p class="meta"><span>${esc(iv.period || "")}</span><span>${qa.length} கேள்விகள்</span></p>
+          <div class="by">
+            ${Y.people(iv).length ? `<div><span class="k">நேர்காணல் எடுத்தவர்${Y.people(iv).length > 1 ? "கள்" : ""}</span><span class="v">${Y.people(iv).map(esc).join(" · ")}</span></div>` : ""}
+            ${iv.date ? `<div><span class="k">நேர்காணல் நாள்</span><span class="v">${esc(Y.fmtFull(iv.date))}</span></div>` : ""}
+          </div>
           <p class="intro">${esc(iv.intro || iv.summary || "")}</p>
         </div>
         <div class="pic"><img src="${esc(iv.photo)}" alt="${esc(iv.name)}" width="1024" height="1024"></div>
