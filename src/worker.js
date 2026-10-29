@@ -1,4 +1,5 @@
 // Cloudflare Worker நுழைவு: /api/* கோரிக்கைகளை functions/ கோப்புகளுக்கு அனுப்பும்; மற்றவை public/ நிலையான கோப்புகள்
+import * as ask from "../functions/api/ask.js";
 import * as content from "../functions/api/content.js";
 import * as reindex from "../functions/api/reindex.js";
 import * as search from "../functions/api/search.js";
@@ -9,6 +10,7 @@ import * as logout from "../functions/api/auth/logout.js";
 import * as me from "../functions/api/auth/me.js";
 
 const ROUTES = {
+  "/api/ask": ask,
   "/api/content": content,
   "/api/reindex": reindex,
   "/api/search": search,

@@ -29,7 +29,7 @@ go.onclick = async () => {
     const r = await fetch("/api/reindex", { method: "POST" });
     const j = await r.json();
     if (!r.ok) throw new Error(j.error || r.status);
-    log.textContent = `முடிந்தது ✓\nபகுதிகள்: ${j.chunks}\nAI வெக்டர்கள்: ${j.embedded}\n${j.note || ""}`;
+    log.textContent = `முடிந்தது ✓\nபகுதிகள்: ${j.chunks}\nAI வெக்டர்கள்: ${j.embedded}\nஆய்வாளர் உதவிக் கோப்புகள் (R2): ${j.r2 ?? 0}\n${j.note || ""}`;
   } catch (e) { log.textContent = "பிழை: " + e.message; }
   go.disabled = false;
 };

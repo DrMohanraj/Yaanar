@@ -74,6 +74,22 @@ Y.boot(async (ctx) => {
       </form>
       <p class="rs-note" id="note"></p>
       <div id="out"></div>
+      <section class="ask rs-sec" aria-labelledby="ask-h">
+        <h2 id="ask-h"><i></i>ஆய்வாளர் உதவி</h2>
+        <form class="ask-form" id="ask-f">
+          <p class="lead">நீங்கள் ஆய்வு செய்யும் எழுத்தாளர் பெயரையோ, உங்கள் ஆய்வுக் கேள்வியையோ எழுதுங்கள்.</p>
+          <label class="sr-only" for="ask-q">ஆய்வுக் கேள்வி</label>
+          <textarea id="ask-q" rows="3" maxlength="300" placeholder="எ.கா. செழியன் அருணாசலம் தன் எழுத்து முறை பற்றி என்ன கூறினார்?"></textarea>
+          <div class="ask-row">
+            <div class="rs-opts" role="radiogroup" aria-label="பதில் வகை">
+              <label><input type="radio" name="ask-mode" value="sources" checked> இணைப்புகள் மட்டும்</label>
+              <label><input type="radio" name="ask-mode" value="answer"> சுருக்கப் பதிலும் இணைப்புகளும்</label>
+            </div>
+            <button class="btn solid" type="submit" id="ask-btn">கேள்</button>
+          </div>
+        </form>
+        <div id="ask-out" aria-live="polite"></div>
+      </section>
     </main>${Y.footer(ctx)}`;
 
   const $ = (id) => document.getElementById(id);
@@ -136,6 +152,40 @@ Y.boot(async (ctx) => {
       box.innerHTML = `<div class="rs-sec"><h2><i></i>AI: பொருண்மையில் தொடர்புடையவை</h2><p class="rs-note">AI தேடல் தளம் Cloudflare-ல் வெளியிடப்பட்டு, தேடல் குறியீடு புதுப்பிக்கப்பட்ட பிறகே இயங்கும். இப்போது சொல் அடிப்படைத் தேடல் மட்டும் கிடைக்கிறது.</p></div>`;
     }
   }
+
+  /* ---------- ஆய்வாளர் உதவி (/api/ask — Cloudflare AI Search) ---------- */
+  async function ask() {
+    const q = $("ask-q").value.trim();
+    if (!q) return;
+    const mode = document.querySelector('input[name="ask-mode"]:checked').value;
+    const box = $("ask-out"), btn = $("ask-btn");
+    box.innerHTML = `<p class="rs-note">தேடுகிறது…</p>`;
+    btn.disabled = true;
+    try {
+      const r = await fetch("/api/ask", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q, mode }) });
+      const d = await r.json().catch(() => ({ error: "இணைப்புப் பிழை. மீண்டும் முயலுங்கள்." }));
+      if (d.error || d.message) { box.innerHTML = `<p class="rs-note">${esc(d.error || d.message)}</p>`; return; }
+      const src = (d.sources || []).filter((s) => byId[s.iid]);
+      const ref = (n) => `<a class="ask-ref" href="#ask-s${n}">[${n}]</a>`;
+      box.innerHTML = (d.answer ? `<div class="ask-answer"><h3>சுருக்கப் பதில்</h3>
+          <p>${esc(d.answer).replace(/\[(\d+)\]/g, (_, n) => ref(n))}</p>
+          <p class="ask-warn">குறிப்பு: இது AI தொகுத்த சுருக்கம். ஆய்வேட்டில் மேற்கோள் இடும்போது கீழே உள்ள மூல நேர்காணலைப் படித்து அதிலிருந்தே மேற்கோள் காட்டுங்கள்.</p></div>` : "")
+        + `<h3 class="ask-src-h">தொடர்புடைய நேர்காணல்கள்</h3>`
+        + (src.length ? src.map((s) => {
+          const w = byId[s.iid];
+          return `<article class="hit ask-src" id="ask-s${s.n}">
+            <p class="hq">[${s.n}] ${esc(w.name)} — கேள்வி ${s.q}</p>
+            <p class="ha">${esc(s.snippet)}…</p>
+            <p class="cite"><span>மேற்கோள்: ${esc(w.name)} · நேர்காணல் ${esc(Y.fmtFull(w.date))} · கேள்வி ${s.q}</span>
+              <a href="${Y.ivUrl(s.iid, s.q)}">முழு நேர்காணல் ${icons.arrow("sm")}</a></p></article>`;
+        }).join("") : `<p class="rs-note">தொடர்புடைய நேர்காணல் எதுவும் கிடைக்கவில்லை.</p>`);
+    } catch {
+      box.innerHTML = `<p class="rs-note">இணைப்புப் பிழை. மீண்டும் முயலுங்கள்.</p>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  $("ask-f").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
 
   $("f").addEventListener("submit", (e) => { e.preventDefault(); run(true); });
   let t; $("q").addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => run(false), 250); });

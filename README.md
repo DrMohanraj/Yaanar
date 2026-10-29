@@ -30,6 +30,15 @@ wrangler.toml
 7. AI: `wrangler.toml`-ல் `[ai] binding = "AI"` உள்ளது (Workers AI கணக்கில் இயக்கப்பட்டிருக்க வேண்டும்).
 8. தளம் திறந்து `/admin` → GitHub மூலம் உள்நுழை → ஒரு நேர்காணல் சேமி → `/admin/reindex.html` → "புதுப்பி".
 
+## ஆய்வாளர் உதவி (Cloudflare AI Search)
+தேடல் பக்கத்தின் கீழே உள்ள "ஆய்வாளர் உதவி" `/api/ask` மூலம் வேலை செய்யும். ஒருமுறை அமைக்க வேண்டியவை (இந்த வரிசையில்):
+1. Cloudflare → R2 → **Create bucket** → பெயர் `yaanar-interviews`. (`wrangler.toml`-ல் இந்த bucket இணைக்கப்பட்டுள்ளது; bucket இல்லாமல் deploy தோல்வியடையும்.)
+2. Push செய்து deploy முடிந்ததும் `/admin/reindex.html` → "புதுப்பி". ஒவ்வொரு கேள்வி–பதிலும் bucket-ல் `<id>/q-NN.md` கோப்பாக எழுதப்படும்.
+3. Cloudflare → AI → **AI Search** → Create → Data source: R2 bucket `yaanar-interviews` → பெயர் `yaanar-interviews` (`wrangler.toml` → `AI_SEARCH_NAME`).
+4. AI Search குறியிட்டு முடிந்ததும் (Overview-ல் நிலை தெரியும்) தேடல் பக்கத்தில் கேள்வி கேட்டுச் சோதிக்கவும்.
+
+புதிய நேர்காணல் சேர்த்த பின் reindex செய்தால் R2 கோப்புகள் புதுப்பிக்கப்படும்; AI Search அவற்றைத் தானாக மீண்டும் குறியிடும் (உடனே வேண்டுமெனில் AI Search → Sync).
+
 ## தினசரிப் பயன்பாடு
 - புதிய நேர்காணல்: `/admin` → ＋ புதிய நேர்காணல் → படிவம் நிரப்பு → "முகப்பில் சிறப்பாகக் காட்டு" தேர்வு → சேமி → தேடல் குறியீட்டைப் புதுப்பி.
 - ஒவ்வொரு சேமிப்பும் GitHub commit; Cloudflare 1–2 நிமிடத்தில் தானாக வெளியிடும்.
