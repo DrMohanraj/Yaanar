@@ -47,7 +47,7 @@ const Y = (() => {
       { href: "/", t: "முகப்பு" },
       { href: ivUrl(ctx.featured?.id), t: "நேர்காணல்", key: "interview" },
       { href: "/collection.html", t: "தொகுப்பு" },
-      { href: "/about.html", t: "எங்களைப் பற்றி" },
+      { href: "/about.html", t: "ஆசிரியர் குழு" },
       { href: "/search.html", t: "ஆய்வுத் தேடல்" },
     ];
   }

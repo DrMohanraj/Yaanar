@@ -27,7 +27,7 @@ Y.boot((ctx) => {
     <main>
       <section class="iv-head">
         <div class="txt">
-          <a class="label" style="color:var(--primary)" href="/collection.html?cat=${encodeURIComponent(iv.category || "")}">${esc(iv.category)}</a>
+          <a class="label" style="color:var(--primary-text)" href="/collection.html?cat=${encodeURIComponent(iv.category || "")}">${esc(iv.category)}</a>
           <span class="rule" style="margin-top:.75rem"></span>
           <h1>${esc(iv.name)}</h1>
           <p class="ttl">${esc(iv.title)}</p>

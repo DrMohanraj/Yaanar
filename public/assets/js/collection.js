@@ -8,11 +8,7 @@ Y.boot((ctx) => {
 
   document.getElementById("app").innerHTML = `${Y.topbar(ctx, "collection")}
     <main>
-      <div class="page-head">
-        <p class="label" style="color:var(--primary)">தொகுப்பு</p><span class="rule" style="margin-top:.75rem"></span>
-        <h1>எல்லா நேர்காணல்களும்</h1>
-        <p class="lead">எழுத்தாளர் பெயர் அல்லது தலைப்பால் தேடுங்கள்; வகையைத் தேர்ந்து வடிகட்டுங்கள். அட்டையைத் தொட்டால் அந்த எழுத்தாளரின் பக்கம் திறக்கும்.</p>
-      </div>
+      <h1 class="sr-only">எல்லா நேர்காணல்களும்</h1>
       <div class="tools">
         <label class="field">${icons.search()}<span class="sr-only">தேடல்</span>
           <input id="q" type="search" placeholder="எழுத்தாளர் பெயர் அல்லது தலைப்பு" value="${esc(q)}" autocomplete="off"></label>

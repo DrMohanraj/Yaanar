@@ -62,7 +62,7 @@ Y.boot(async (ctx) => {
   app.innerHTML = `${Y.topbar(ctx, "search")}
     <main>
       <div class="page-head">
-        <p class="label" style="color:var(--primary)">ஆய்வு மாணவர்களுக்காக</p><span class="rule" style="margin-top:.75rem"></span>
+        <p class="label" style="color:var(--primary-text)">ஆய்வு மாணவர்களுக்காக</p><span class="rule" style="margin-top:.75rem"></span>
         <h1>ஆய்வுத் தேடல்</h1>
         <p class="lead">ஒரு சொல்லை எழுதுங்கள். எல்லா எழுத்தாளர்களின் நேர்காணல்களிலும் அந்தச் சொல் (அதன் வேற்றுமை, தொகை வடிவங்கள் உட்பட) வரும் பகுதிகள் எழுத்தாளர் வாரியாகத் தொகுத்துக் காட்டப்படும்.</p>
       </div>
@@ -116,7 +116,7 @@ Y.boot(async (ctx) => {
     hits.forEach(({ c }) => (c.q + " " + c.a).replace(WORD_RE, (t) => { if (m.any(t)) forms.add(t); return t; }));
     const writers = new Set(hits.map((h) => h.c.iid)).size;
     note.innerHTML = hits.length
-      ? `“${esc(query)}” — <strong>${writers}</strong> எழுத்தாளர்கள், <strong>${hits.length}</strong> பகுதிகள். கண்டறிந்த வடிவங்கள்: ${[...forms].slice(0, 12).map((f) => `<mark style="background:var(--primary);color:var(--primary-foreground);padding:0 .25em">${esc(f)}</mark>`).join(" ")}`
+      ? `“${esc(query)}” — <strong>${writers}</strong> எழுத்தாளர்கள், <strong>${hits.length}</strong> பகுதிகள். கண்டறிந்த வடிவங்கள்: ${[...forms].slice(0, 12).map((f) => `<mark style="background:var(--teal-deep);color:var(--primary-foreground);padding:0 .25em">${esc(f)}</mark>`).join(" ")}`
       : `“${esc(query)}” என்ற சொல் எந்த நேர்காணலிலும் இல்லை.`;
     out.innerHTML = `<div class="rs-sec"><h2><i></i>சொல் வரும் இடங்கள்</h2>${groupsHtml(hits, m, false) || '<p class="empty">பொருத்தமான பகுதி இல்லை.</p>'}</div><div id="ai-out"></div>`;
 
