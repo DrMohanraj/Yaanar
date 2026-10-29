@@ -17,10 +17,11 @@ run_worker_first = ["/api/*"]
 binding = "AI"
 
 # ஆய்வாளர் உதவி: reindex இந்த bucket-ல் <id>/q-NN.md கோப்புகளை எழுதும்; AI Search இதையே குறியிடும்
-# (deploy செய்வதற்கு முன் Cloudflare-ல் இந்த bucket உருவாக்கப்பட்டிருக்க வேண்டும்)
-[[r2_buckets]]
-binding = "INTERVIEWS_BUCKET"
-bucket_name = "yaanar-interviews"
+# இப்போது முடக்கப்பட்டுள்ளது. இயக்க: Cloudflare-ல் bucket உருவாக்கி, கீழே உள்ள 3 வரிகளின் # நீக்கவும்;
+# பிறகு search.js-ல் ASK_ENABLED = true.
+# [[r2_buckets]]
+# binding = "INTERVIEWS_BUCKET"
+# bucket_name = "yaanar-interviews"
 
 [vars]
 GITHUB_REPO = "DrMohanraj/Yaanar"

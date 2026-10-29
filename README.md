@@ -32,7 +32,7 @@ wrangler.toml
 
 ## ஆய்வாளர் உதவி (Cloudflare AI Search)
 தேடல் பக்கத்தின் கீழே உள்ள "ஆய்வாளர் உதவி" `/api/ask` மூலம் வேலை செய்யும். ஒருமுறை அமைக்க வேண்டியவை (இந்த வரிசையில்):
-1. Cloudflare → R2 → **Create bucket** → பெயர் `yaanar-interviews`. (`wrangler.toml`-ல் இந்த bucket இணைக்கப்பட்டுள்ளது; bucket இல்லாமல் deploy தோல்வியடையும்.)
+1. Cloudflare → R2 → **Create bucket** → பெயர் `yaanar-interviews`. பிறகு `wrangler.toml`-ல் `[[r2_buckets]]` பகுதியின் 3 வரிகளின் `#`-ஐ நீக்கி, `public/assets/js/search.js`-ல் `ASK_ENABLED = true` ஆக்கவும். (இப்போது இவை முடக்கப்பட்டுள்ளன; bucket இல்லாமல் binding-ஐ இயக்கினால் deploy தோல்வியடையும்.)
 2. Push செய்து deploy முடிந்ததும் `/admin/reindex.html` → "புதுப்பி". ஒவ்வொரு கேள்வி–பதிலும் bucket-ல் `<id>/q-NN.md` கோப்பாக எழுதப்படும்.
 3. Cloudflare → AI → **AI Search** → Create → Data source: R2 bucket `yaanar-interviews` → பெயர் `yaanar-interviews` (`wrangler.toml` → `AI_SEARCH_NAME`).
 4. AI Search குறியிட்டு முடிந்ததும் (Overview-ல் நிலை தெரியும்) தேடல் பக்கத்தில் கேள்வி கேட்டுச் சோதிக்கவும்.

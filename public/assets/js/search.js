@@ -1,5 +1,6 @@
 /* ஆய்வுத் தேடல் — சொல் வடிவங்கள் (சாதி, சாதியை, சாதியம்…) + AI தொடர்புடைய பகுதிகள் */
 Y.boot(async (ctx) => {
+  const ASK_ENABLED = false; // ஆய்வாளர் உதவி: Cloudflare R2 + AI Search அமைத்த பிறகு true ஆக்கவும்
   const { esc, icons, byId } = Object.assign({}, Y, ctx);
   const WORD_RE = /[\u0B80-\u0BFFA-Za-z0-9]+/g;
   const PULLI = "\u0BCD";
@@ -74,7 +75,7 @@ Y.boot(async (ctx) => {
       </form>
       <p class="rs-note" id="note"></p>
       <div id="out"></div>
-      <section class="ask rs-sec" aria-labelledby="ask-h">
+      ${ASK_ENABLED ? `<section class="ask rs-sec" aria-labelledby="ask-h">
         <h2 id="ask-h"><i></i>ஆய்வாளர் உதவி</h2>
         <form class="ask-form" id="ask-f">
           <p class="lead">நீங்கள் ஆய்வு செய்யும் எழுத்தாளர் பெயரையோ, உங்கள் ஆய்வுக் கேள்வியையோ எழுதுங்கள்.</p>
@@ -89,7 +90,7 @@ Y.boot(async (ctx) => {
           </div>
         </form>
         <div id="ask-out" aria-live="polite"></div>
-      </section>
+      </section>` : ""}
     </main>${Y.footer(ctx)}`;
 
   const $ = (id) => document.getElementById(id);
@@ -185,7 +186,7 @@ Y.boot(async (ctx) => {
       btn.disabled = false;
     }
   }
-  $("ask-f").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
+  if (ASK_ENABLED) $("ask-f").addEventListener("submit", (e) => { e.preventDefault(); ask(); });
 
   $("f").addEventListener("submit", (e) => { e.preventDefault(); run(true); });
   let t; $("q").addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => run(false), 250); });
