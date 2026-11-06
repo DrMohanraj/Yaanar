@@ -14,7 +14,7 @@ Y.boot((ctx) => {
     <main>
       <h1 class="sr-only">ஆசிரியர் குழு</h1>
       <section class="subs team" aria-label="ஆசிரியர் குழு">
-        ${people.map((p) => `<article class="person"><img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">
+        ${people.map((p) => `<article class="person"><img src="${esc(p.photo)}" ${Y.srcset(p.photo, "(min-width:1100px) 20vw, (min-width:768px) 33vw, (min-width:560px) 50vw, 100vw")} alt="${esc(p.name)}" loading="lazy" width="1024" height="1024">
           <h3>${esc(p.name)}</h3><p class="role">${esc(p.role)}</p><p class="bio">${esc(p.bio || "")}</p></article>`).join("")}
       </section>
       <section class="contact-line">

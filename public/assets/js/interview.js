@@ -38,7 +38,7 @@ Y.boot((ctx) => {
           </div>
           <p class="intro">${esc(iv.intro || iv.summary || "")}</p>
         </div>
-        <div class="pic"><img src="${esc(iv.photo)}" alt="${esc(iv.name)}" width="1024" height="1024"></div>
+        <div class="pic"><img src="${esc(iv.photo)}" ${Y.srcset(iv.photo, "(min-width:900px) 45vw, 100vw")} alt="${esc(iv.name)}" width="1024" height="1024"></div>
       </section>
       <div class="iv-body">
         <nav class="rail" aria-label="கேள்வி எண்கள்"><ol>${qa.map((_, i) => `<li><a href="#q-${i + 1}" data-n="${i + 1}">${pad(i + 1)}</a></li>`).join("")}</ol></nav>

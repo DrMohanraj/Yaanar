@@ -119,9 +119,15 @@ const Y = (() => {
     return [...s];
   }
 
+  /* மாதிரிப் படங்களுக்குச் சிறிய பதிப்புகள் உள்ளன; மற்ற படங்கள் அப்படியே */
+  function srcset(src, sizes) {
+    const m = /^\/assets\/img\/(writer-\d+)\.jpg$/.exec(src || "");
+    return m ? `srcset="/assets/img/${m[1]}-320.jpg 320w, /assets/img/${m[1]}-640.jpg 640w, ${src} 1024w" sizes="${sizes}"` : "";
+  }
+
   function card(iv, cls = "gcard") {
     return `<a class="${cls}" href="${ivUrl(iv.id)}">
-      <div class="imgwrap"><img src="${esc(iv.photo)}" alt="${esc(iv.name)}" loading="lazy"></div>
+      <div class="imgwrap"><img src="${esc(iv.photo)}" ${srcset(iv.photo, "(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw")} alt="${esc(iv.name)}" loading="lazy" width="1024" height="1024"></div>
       <div class="meta"><span class="catname">${esc(iv.category)}</span><i></i><span class="muted">${esc(fmtFull(iv.date))}</span></div>
       <div class="story"><div><h3>${esc(iv.title)}</h3><p>${esc(iv.name)}</p></div>${icons.arrow("lg")}</div>
       ${iv.summary ? `<p class="sum">${esc(iv.summary)}</p>` : ""}
@@ -129,5 +135,5 @@ const Y = (() => {
     </a>`;
   }
 
-  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, ivUrl, fmtDate, fmtFull, people, card };
+  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, srcset, ivUrl, fmtDate, fmtFull, people, card };
 })();

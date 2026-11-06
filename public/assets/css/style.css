@@ -5,7 +5,7 @@
   --card:oklch(1 0 0);
   --primary:oklch(0.62 0.11 190);
   --primary-foreground:oklch(0.98 0.01 90);
-  --muted-foreground:oklch(0.46 0.03 205);
+  --muted-foreground:oklch(0.42 0.03 205);
   --primary-text:oklch(0.46 0.09 200);
   --border:oklch(0.88 0.015 90);
   --teal-deep:oklch(0.44 0.08 205);
@@ -752,3 +752,13 @@ a:hover>.story .icon{transform:translateX(4px)}
 .gcard .meta i{display:none}
 .gcard .meta span{white-space:nowrap}
 @media(min-width:640px){.gcard .story h3{min-height:2.9em}}
+
+/* ===== முகப்பு முடிவில் எல்லா நேர்காணல்களுக்கும் இணைப்பு ===== */
+.cards3 .more{grid-column:1/-1;justify-self:end;display:inline-flex;align-items:center;gap:.6rem;font-weight:500;color:var(--primary-text);border-bottom:1px solid var(--primary)}
+.cards3 .more .icon{transition:transform .25s}
+.cards3 .more:hover .icon{transform:translateX(4px)}
+@media(min-width:768px){.cards3{row-gap:.75rem;padding-top:1rem;padding-bottom:1rem}.card3 img{min-height:13rem}}
+
+/* ===== மெனு பொத்தான்: சுட்டிக்கு மறுமொழி ===== */
+.menu-btn .icon{transition:color .15s,transform .15s}
+.menu-btn:hover .icon{color:var(--foreground);transform:scale(1.12)}

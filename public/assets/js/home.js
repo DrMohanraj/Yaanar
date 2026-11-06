@@ -43,13 +43,14 @@ Y.boot((ctx) => {
             </div>
           </div>
         </div>
-        <div class="hero-img"><img src="${esc(featured.photo)}" alt="${esc(featured.name)}" width="1024" height="1024"></div>
+        <div class="hero-img"><img src="${esc(featured.photo)}" ${Y.srcset(featured.photo, "(min-width:1024px) 46vw, 100vw")} alt="${esc(featured.name)}" width="1024" height="1024"></div>
       </section>
       <section class="cards3" aria-label="மேலும் நேர்காணல்கள்">
         ${cards.map((c, i) => `<a class="card3" href="${Y.ivUrl(c.id)}">
-          <img src="${esc(c.photo)}" alt="${esc(c.name)}" loading="lazy" width="1024" height="640">
+          <img src="${esc(c.photo)}" ${Y.srcset(c.photo, "(min-width:768px) 30vw, 100vw")} alt="${esc(c.name)}" loading="lazy" width="1024" height="640">
           <div class="no">0${i + 1}<i></i><span class="muted">${esc(c.category)}</span></div>
           <div class="story"><div><h3>${esc(c.title)}</h3><p>${esc(c.name)}</p></div>${icons.arrow("lg")}</div></a>`).join("")}
+        <a class="more" href="/collection.html">எல்லா நேர்காணல்களும்${icons.arrow()}</a>
       </section>
     </main>
   </div>${Y.footer(ctx)}`;
