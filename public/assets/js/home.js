@@ -24,19 +24,12 @@ Y.boot((ctx) => {
   const lines = heroLines(featured);
   const cards = list.filter((i) => i.id !== featured.id).slice(0, 3);
   const firstQ = featured.qa && featured.qa[0] ? featured.qa[0].q : featured.summary || "";
-  const nav = [["முகப்பு", "/"], ["நேர்காணல்", Y.ivUrl(featured.id)], ["தொகுப்பு", "/collection.html"], ["ஆசிரியர் குழு", "/about.html"]];
 
   document.title = `${site.title} — ${site.tagline || "நேர்காணல் இதழ்"}`;
-  app.innerHTML = `<div class="page-grid solo">
+  app.innerHTML = `${Y.topbar(ctx, "")}<div class="page-grid solo">
     <main>
       <section class="hero">
         <div class="hero-text">
-          <div class="brandbar">
-            <button class="menu-btn" aria-label="மெனு">${icons.menu("lg primary")}</button>
-            <a class="brand" href="/">${esc(site.title)}</a>
-            <nav class="nav-inline label" aria-label="முதன்மை மெனு">${nav.map(([t, h]) => `<a href="${h}" ${h === "/" ? 'aria-current="page"' : ""}>${t}</a>`).join("")}</nav>
-            <a class="hsearch" href="/search.html" aria-label="ஆய்வுத் தேடல்">${icons.search()}</a>
-          </div>
           <p class="label hero-kicker">${esc(site.heroKicker || "")}</p>
           <span class="rule" style="margin-top:.6rem"></span>
           <h1 aria-label="${esc(lines.join(" "))}">${lines.map((l, i) => `<span class="ln l${i + 1}">${bounce(l)}</span>`).join("")}</h1>

@@ -14,7 +14,7 @@ Y.boot((ctx) => {
           <input id="q" type="search" placeholder="எழுத்தாளர் பெயர் அல்லது தலைப்பு" value="${esc(q)}" autocomplete="off"></label>
         <div class="chips" id="chips" role="group" aria-label="வகை வடிகட்டி"></div>
       </div>
-      <p class="count" id="count" style="padding:1rem 2rem" aria-live="polite"></p>
+      <p class="count" id="count" aria-live="polite"></p>
       <div class="grid-cards" id="grid"></div>
     </main>${Y.footer(ctx)}`;
 

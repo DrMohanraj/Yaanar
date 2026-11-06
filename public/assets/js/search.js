@@ -117,7 +117,7 @@ Y.boot(async (ctx) => {
     return group(hits).map(([iid, hs]) => {
       const w = byId[iid];
       return `<section class="writer"><div class="who"><img src="${esc(w.photo)}" alt="" loading="lazy">
-        <div><h3>${esc(w.name)}</h3><span>${esc(w.category)} · ${hs.length} பகுதிகள்</span></div></div>
+        <div><h3>${esc(w.name)}</h3><span>${esc(w.category)}</span><span>${hs.length} ${hs.length === 1 ? "பகுதி" : "பகுதிகள்"}</span></div></div>
         <div class="hits">${hs.map((h) => hitHtml(h, m, ai)).join("")}</div></section>`;
     }).join("");
   }

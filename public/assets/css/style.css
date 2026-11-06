@@ -673,11 +673,11 @@ a:hover>.story .icon{transform:translateX(4px)}
   .card3{display:flex;flex-direction:column;padding:1.5rem}
   .card3 img{flex:1 1 0;height:0;min-height:15rem;aspect-ratio:auto;object-position:center 25%}
   .card3 .no{margin-top:1rem}
-  #app:has(.page-grid.solo) .footer-in{gap:1.5rem 2.5rem;padding:1.75rem 3.5rem}
-  #app:has(.page-grid.solo) .footer .about{line-height:1.7;margin-top:.5rem}
-  #app:has(.page-grid.solo) .footer h4{margin-bottom:.5rem}
-  #app:has(.page-grid.solo) .footer ul{gap:.15rem}
-  #app:has(.page-grid.solo) .footer-bottom{padding-top:.75rem;padding-bottom:.75rem}
+  .footer-in{gap:1.5rem 2.5rem;padding:1.75rem 3.5rem}
+  .footer .about{line-height:1.7;margin-top:.5rem}
+  .footer h4{margin-bottom:.5rem}
+  .footer ul{gap:.15rem}
+  .footer-bottom{padding-top:.75rem;padding-bottom:.75rem}
 }
 @media(max-width:767px){.card3 img{aspect-ratio:4/3}}
 /* அட்டைத் தலைப்பு 1 வரியோ 2 வரியோ: படங்கள் ஒரே உயரம் */
@@ -688,3 +688,67 @@ a:hover>.story .icon{transform:translateX(4px)}
   .footer-in>:first-child,.footer-in>:last-child{grid-column:span 2}
   .footer ul{gap:.25rem}
 }
+
+/* ===== வடிவமைப்பு ஆய்வுத் திருத்தங்கள் 2 ===== */
+/* ஒரே இடது ஓரம் */
+:root{--gutter:2rem;--bar:4.75rem}
+@media(min-width:1024px){:root{--gutter:3.5rem}}
+.topbar{min-height:var(--bar);padding:.5rem var(--gutter)}
+.topbar .menu-btn,.topicons a{display:flex;align-items:center}
+.footer-bottom,.page-head,.tools,.rs-form,.rs-note,.contact-line,.iv-next a,.writer .who,.rs-sec>h2,.count{padding-left:var(--gutter);padding-right:var(--gutter)}
+.iv-head .txt,.hero-text{padding-left:var(--gutter);padding-right:var(--gutter)}
+.footer-in{padding-left:var(--gutter);padding-right:var(--gutter)}
+.count{padding-top:1rem;padding-bottom:1rem}
+.cards3{gap:2rem;padding:1.5rem var(--gutter)}
+.card3{padding:0;border:0}
+.grid-cards{gap:2.5rem 2rem;padding:0 var(--gutter) 3rem}
+.gcard{display:flex;flex-direction:column;padding:0;border:0}
+.subs.team{gap:2.5rem 2rem;padding:1.5rem var(--gutter) 3rem}
+.subs .person{padding:0;border:0}
+.hit{padding-left:var(--gutter);padding-right:var(--gutter)}
+@media(min-width:900px){.writer{grid-template-columns:320px 1fr}.writer .who{padding-right:1.5rem}.hit{padding-left:2rem}}
+
+/* எல்லாப் பக்கங்களிலும் ஒரே footer */
+@media(min-width:768px){.footer-in{gap:1.5rem 2.5rem;padding-top:1.75rem;padding-bottom:1.75rem}
+  .footer .about{line-height:1.7;margin-top:.5rem}.footer h4{margin-bottom:.5rem}.footer ul{gap:.15rem}
+  .footer-bottom{padding-top:.75rem;padding-bottom:.75rem}}
+
+/* முகப்பு: header + hero = முதல் திரை; அட்டைகள் + footer = அடுத்த திரை */
+.hero{min-height:calc(100vh - var(--bar));min-height:calc(100svh - var(--bar))}
+@media(min-width:768px){
+  #app:has(.page-grid.solo){grid-template-rows:auto minmax(calc(100vh - var(--bar)),auto) 1fr auto;grid-template-rows:auto minmax(calc(100svh - var(--bar)),auto) 1fr auto;min-height:calc(200vh - var(--bar));min-height:calc(200svh - var(--bar))}
+}
+@media(min-width:1024px){
+  .hero{grid-template-columns:1.2fr 1fr}
+  .hero-text{padding-top:1rem;padding-bottom:1.75rem}
+  .hero h1 .l1,.hero h1 .l2{font-size:clamp(2.6rem,5vw,6rem)}
+  .hero h1 .l3{font-size:clamp(2.8rem,5.4vw,6.4rem)}
+}
+
+/* தலைப்பு அசைவு: சுமார் 1.5 வினாடியில் முடியும் */
+.hero h1 .ch{animation-duration:.75s;animation-delay:calc(var(--i)*30ms + 150ms)}
+
+/* வாசிப்பு: வரி இடைவெளி; கைபேசியில் ஒரு வரிக்கு அதிகச் சொற்கள் */
+.qa-a,.iv-head .intro,.hit .ha,.ask-answer p{font-size:1.45rem;line-height:1.9}
+@media(max-width:767px){
+  .qa-a,.iv-head .intro,.hit .ha,.ask-answer p{font-size:1.3rem;line-height:1.8}
+  .qa{padding-top:2.5rem;padding-bottom:2.5rem}
+}
+
+/* எழுத்து அளவுகள்: 17, 20, 23, 24, 32, தலைப்பு */
+.rail a{font-size:17px}
+.iv-next h3,.person h3,.subs h3{font-size:1.5rem}
+.qa-q{font-size:clamp(1.6rem,2.5vw,2rem)}
+.splash blockquote{font-size:clamp(1.5rem,2.5vw,2rem)}
+
+/* தேடல்: பிரிவுத் தலைப்பு எழுத்தாளர் பெயரைவிடப் பெரிது */
+.rs-sec>h2{font-family:var(--font-display);font-size:2rem;font-weight:600;line-height:1.4}
+.writer .who span{display:block;line-height:1.5}
+.writer .who span+span{margin-top:.15rem}
+
+/* தொகுப்பு */
+@media(min-width:1024px){.tools{grid-template-columns:minmax(0,30rem) 1fr}}
+.gcard .meta{flex-wrap:wrap;gap:0 .75rem}
+.gcard .meta i{display:none}
+.gcard .meta span{white-space:nowrap}
+@media(min-width:640px){.gcard .story h3{min-height:2.9em}}
