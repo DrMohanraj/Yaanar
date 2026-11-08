@@ -762,3 +762,9 @@ a:hover>.story .icon{transform:translateX(4px)}
 /* ===== மெனு பொத்தான்: சுட்டிக்கு மறுமொழி ===== */
 .menu-btn .icon{transition:color .15s,transform .15s}
 .menu-btn:hover .icon{color:var(--foreground);transform:scale(1.12)}
+
+/* ===== கேள்விகளுக்கு அடர் hot pink ===== */
+:root{--pink:oklch(0.54 0.21 355)}
+.qa-q,.hit .hq{color:var(--pink)}
+.qa-n{color:var(--pink)}
+.qa-n i{background:var(--pink)}
