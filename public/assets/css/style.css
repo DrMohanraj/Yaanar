@@ -768,3 +768,36 @@ a:hover>.story .icon{transform:translateX(4px)}
 .qa-q,.hit .hq{color:var(--pink)}
 .qa-n{color:var(--pink)}
 .qa-n i{background:var(--pink)}
+
+/* ===== ஆசிரியர் பக்கக் கட்டமைப்பு ===== */
+.team-page>section,.tp-head{padding:3rem var(--gutter);border-bottom:1px solid var(--border)}
+.tp-head h1{margin-top:1rem;font-family:var(--font-display);font-weight:600;font-size:clamp(2.2rem,4.4vw,3.4rem);line-height:1.35;max-width:22ch}
+.tp-about{margin-top:1.5rem;display:grid;gap:1rem;max-width:44rem}
+.tp-about p{font-family:"Noto Serif Tamil",serif;font-size:1.15rem;line-height:2}
+.tp-chief{display:grid;gap:2rem;align-items:center}
+.tp-chief figure{margin:0;max-width:26rem}
+.tp-chief img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 20%}
+.tp-chief h2{margin-top:.5rem;font-family:var(--font-display);font-weight:600;font-size:clamp(1.9rem,3.4vw,2.8rem);line-height:1.35}
+.tp-chief .rule{margin:1.25rem 0}
+.tp-chief .bio{font-family:"Noto Serif Tamil",serif;font-size:1.15rem;line-height:2;max-width:36rem}
+.tp-chief .label{color:var(--primary-text)}
+@media(min-width:900px){.tp-chief{grid-template-columns:minmax(0,26rem) 1fr;gap:4rem}}
+.tp-sec{font-family:var(--font-display);font-weight:600;font-size:1.6rem;display:flex;align-items:center;gap:1rem}
+.tp-sec::before{content:"";width:2.5rem;height:1px;background:var(--primary)}
+.tp-grid{margin-top:2rem;display:grid;gap:2.5rem 2rem;grid-template-columns:1fr}
+@media(min-width:560px){.tp-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.tp-grid{grid-template-columns:repeat(4,1fr)}}
+.tp-person img{width:100%;aspect-ratio:1;object-fit:cover;object-position:center 20%}
+.tp-person h3{margin-top:1rem;font-family:var(--font-display);font-weight:600;font-size:1.35rem;line-height:1.45}
+.tp-person .role{font-size:17px;color:var(--primary-text)}
+.tp-person .bio{margin-top:.5rem;font-size:18px;line-height:1.8;color:var(--muted-foreground)}
+.tp-contact{border-bottom:0!important}
+.tp-contact .muted{margin-top:.75rem}
+.tp-links{margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem 2rem}
+.tp-social{font-size:17px;border-bottom:1px solid var(--primary);padding-bottom:2px}
+.tp-social:hover{color:var(--primary-text)}
+@media(max-width:559px){.team-page>section,.tp-head{padding-top:2.25rem;padding-bottom:2.25rem}.tp-chief figure{max-width:none}}
+@media(min-width:1024px){.tp-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);column-gap:4rem;align-items:start}.tp-head h1{margin-top:0}.tp-head .label{grid-column:1/-1;margin-bottom:1rem}.tp-head .tp-about{margin-top:0}}
+.tp-chief img,.tp-person img{height:auto}
+@media(min-width:900px){.tp-chief{grid-template-columns:minmax(0,22rem) 1fr}}
+@media(max-width:559px){.tp-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem 1rem}.tp-person h3{font-size:1.15rem}.tp-person .bio{font-size:16px}}
