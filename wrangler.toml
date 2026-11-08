@@ -28,6 +28,5 @@ GITHUB_REPO = "DrMohanraj/Yaanar"
 GITHUB_BRANCH = "main"
 ALLOWED_USERS = "DrMohanraj"          # பலர் எனில் கமாவால் பிரிக்கவும்
 AI_SEARCH_NAME = "yaanar-interviews"   # Cloudflare AI Search instance பெயர்
-GITHUB_CLIENT_ID = "Ov23liFP3qb3RMYYWi09"   # பொது அடையாளம், ரகசியம் அல்ல
-# GITHUB_CLIENT_SECRET, GITHUB_TOKEN, SESSION_SECRET: இவை ரகசியங்கள். இங்கே ஒருபோதும் இட வேண்டாம்;
+# GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_TOKEN, SESSION_SECRET: இங்கே இட வேண்டாம்;
 # Cloudflare → yaanar → Settings → Variables and Secrets-ல் "Secret" வகையாக மட்டும் வைக்கவும்.
