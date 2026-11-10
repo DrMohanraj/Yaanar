@@ -62,10 +62,11 @@ Y.boot((ctx) => {
   /* splash reveal + rail highlight + progress */
   const items = [...document.querySelectorAll(".qa")];
   const links = new Map([...document.querySelectorAll(".rail a")].map((a) => [a.dataset.n, a]));
+  /* முக்கிய வரிக் குமிழ் திரையில் தெரியும்போது அசைவு; நீண்ட பதில்களிலும் (கைபேசி) தவறாது */
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); });
-  }, { threshold: 0.25 });
-  items.forEach((el) => io.observe(el));
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.closest(".qa").classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.3 });
+  items.forEach((el) => { const s = el.querySelector(".splash"); s ? io.observe(s) : el.classList.add("in"); });
 
   const spy = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
