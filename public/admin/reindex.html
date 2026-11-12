@@ -16,23 +16,8 @@
   <h1>தேடல் குறியீட்டைப் புதுப்பி</h1>
   <p class="note">புதிய நேர்காணலைச் சேர்த்த பிறகோ, பதில்களை மாற்றிய பிறகோ இங்கே புதுப்பிக்கவும். சொல் தேடலுக்கான பகுதிகளும், AI தேடலுக்கான வெக்டர்களும் GitHub-ல் பதிவாகி, Cloudflare தானாக மீண்டும் வெளியிடும் (1–2 நிமிடம்).</p>
   <p><button class="btn solid" id="go">தேடல் குறியீட்டைப் புதுப்பி</button></p>
-  <pre id="log" class="muted" style="white-space:pre-wrap"></pre>
+  <pre id="log" class="muted log"></pre>
 </main>
-<script>
-const log = document.getElementById("log"), go = document.getElementById("go");
-fetch("/api/auth/me").then(r => { if (!r.ok) throw 0; }).catch(() => {
-  document.getElementById("main").innerHTML = '<p>முதலில் <a href="/admin/">உள்நுழைக</a>.</p>';
-});
-go.onclick = async () => {
-  go.disabled = true; log.textContent = "புதுப்பிக்கிறது… (நேர்காணல்கள் அதிகமாக இருந்தால் சில நிமிடங்கள் ஆகலாம்)";
-  try {
-    const r = await fetch("/api/reindex", { method: "POST" });
-    const j = await r.json();
-    if (!r.ok) throw new Error(j.error || r.status);
-    log.textContent = `முடிந்தது ✓\nபகுதிகள்: ${j.chunks}\nAI வெக்டர்கள்: ${j.embedded}\nஆய்வாளர் உதவிக் கோப்புகள் (R2): ${j.r2 ?? 0}\n${j.note || ""}`;
-  } catch (e) { log.textContent = "பிழை: " + e.message; }
-  go.disabled = false;
-};
-</script>
+<script src="/admin/reindex.js"></script>
 </body>
 </html>

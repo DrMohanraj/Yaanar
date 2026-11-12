@@ -8,6 +8,12 @@ let cache = null; // isolate-இல் மீண்டும் பயன்ப�
 export async function onRequestPost({ request, env }) {
   const head = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" };
   const fail = (status, error) => new Response(JSON.stringify({ error }), { status, headers: head });
+  // ஒரே IP-யிலிருந்து அளவுக்கு மீறிய தேடல்கள் AI ஒதுக்கீட்டைத் தீர்க்காமல்
+  if (env.SEARCH_LIMITER) {
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const { success } = await env.SEARCH_LIMITER.limit({ key: ip });
+    if (!success) return fail(429, "rate_limited");
+  }
   if (!env.AI) return fail(503, "ai_unavailable");
 
   let q = "";

@@ -1,5 +1,5 @@
 // நிர்வாகி மட்டும்: படம் பதிவேற்றம் → public/assets/img/uploads/ (GitHub commit)
-import { SITE_DIR, ghPut, json, requireAdmin } from "../_lib/util.js";
+import { SITE_DIR, failure, ghPut, json, requireAdmin } from "../_lib/util.js";
 
 export async function onRequestPost({ request, env }) {
   const deny = await requireAdmin(request, env);
@@ -13,6 +13,6 @@ export async function onRequestPost({ request, env }) {
     await ghPut(env, `${SITE_DIR}/assets/img/uploads/${file}`, { base64: data, message: `admin: upload ${file}` });
     return json({ url: `/assets/img/uploads/${file}` });
   } catch (e) {
-    return json({ error: e.message }, 500);
+    return failure(e, "படப் பதிவேற்றம்");
   }
 }

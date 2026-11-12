@@ -40,6 +40,8 @@ function normalizeHits(res) {
 }
 
 export async function onRequestPost({ request, env }) {
+  // R2 + AI Search அமைத்து wrangler.toml-ல் ASK_ENABLED = "true" ஆக்கும் வரை முடக்கம் (AI செலவைத் தடுக்க)
+  if (env.ASK_ENABLED !== "true") return json({ error: "disabled" }, 404);
   if (!env.AI) return json({ error: "AI இணைப்பு இல்லை" }, 503);
   let body;
   try { body = await request.json(); } catch { return json({ error: "தவறான கோரிக்கை" }, 400); }

@@ -51,3 +51,5 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--primary);outline
 .toast.err{background:var(--danger)}
 .muted{color:var(--muted)}
 .note{border-left:3px solid var(--primary);padding:.3rem 1rem;background:#fff8;margin:1rem 0}
+
+.log{white-space:pre-wrap}

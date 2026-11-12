@@ -1,5 +1,5 @@
 // நிர்வாகி மட்டும்: data/site.json, data/interviews.json படிக்க/எழுத (ஒவ்வொரு சேமிப்பும் GitHub commit)
-import { SITE_DIR, ghGet, ghPut, json, requireAdmin } from "../_lib/util.js";
+import { SITE_DIR, failure, ghGet, ghPut, json, requireAdmin } from "../_lib/util.js";
 
 const ALLOWED = new Set(["data/site.json", "data/interviews.json"]);
 
@@ -25,6 +25,6 @@ export async function onRequest({ request, env }) {
     }
     return json({ error: "method not allowed" }, 405);
   } catch (e) {
-    return json({ error: e.message }, e.status === 409 || e.status === 422 ? 409 : 500);
+    return failure(e, "சேமிப்பு");
   }
 }

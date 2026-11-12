@@ -10,7 +10,14 @@ keep_vars = true
 directory = "public"
 binding = "ASSETS"
 not_found_handling = "404-page"
-run_worker_first = ["/api/*"]
+# /api/* மட்டுமல்ல: முகப்பு, நேர்காணல் (பகிர்வு முன்னோட்டம்), sitemap, robots
+run_worker_first = ["/api/*", "/", "/interview", "/sitemap.xml", "/robots.txt"]
+
+# AI தேடல்: ஒரு IP-க்கு நிமிடத்துக்கு 20 தேடல்கள் வரை (AI ஒதுக்கீடு தீராமல்)
+[[ratelimits]]
+name = "SEARCH_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }
 
 # Workers AI (AI பொருண்மைத் தேடல் + தேடல் குறியீடு)
 [ai]
@@ -18,7 +25,7 @@ binding = "AI"
 
 # ஆய்வாளர் உதவி: reindex இந்த bucket-ல் <id>/q-NN.md கோப்புகளை எழுதும்; AI Search இதையே குறியிடும்
 # இப்போது முடக்கப்பட்டுள்ளது. இயக்க: Cloudflare-ல் bucket உருவாக்கி, கீழே உள்ள 3 வரிகளின் # நீக்கவும்;
-# பிறகு search.js-ல் ASK_ENABLED = true.
+# பிறகு public/assets/js/search.js-ல் ASK_ENABLED = true, கீழே [vars]-ல் ASK_ENABLED = "true".
 # [[r2_buckets]]
 # binding = "INTERVIEWS_BUCKET"
 # bucket_name = "yaanar-interviews"
@@ -28,5 +35,6 @@ GITHUB_REPO = "DrMohanraj/Yaanar"
 GITHUB_BRANCH = "main"
 ALLOWED_USERS = "DrMohanraj"          # பலர் எனில் கமாவால் பிரிக்கவும்
 AI_SEARCH_NAME = "yaanar-interviews"   # Cloudflare AI Search instance பெயர்
+# ASK_ENABLED = "true"                 # ஆய்வாளர் உதவியை (/api/ask) இயக்க: R2 + AI Search அமைத்த பிறகு மட்டும்
 # GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_TOKEN, SESSION_SECRET: இங்கே இட வேண்டாம்;
 # Cloudflare → yaanar → Settings → Variables and Secrets-ல் "Secret" வகையாக மட்டும் வைக்கவும்.

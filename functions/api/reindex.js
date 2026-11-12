@@ -1,7 +1,7 @@
 // நிர்வாகி மட்டும்: தேடல் குறியீட்டைப் புதுப்பிக்கும்
 //  1) public/data/search-index.json  — சொல் அடிப்படைத் தேடலுக்கான பகுதிகள்
 //  2) public/data/embeddings.json    — Cloudflare Workers AI (bge-m3) வெக்டர்கள் (AI தேடலுக்கு)
-import { SITE_DIR, ghGet, ghPut, json, requireAdmin } from "../_lib/util.js";
+import { SITE_DIR, failure, ghGet, ghPut, json, requireAdmin } from "../_lib/util.js";
 
 const MODEL = "@cf/baai/bge-m3";
 const BATCH = 40;
@@ -80,6 +80,6 @@ export async function onRequestPost({ request, env }) {
     }
     return json({ ok: true, chunks: chunks.length, embedded, r2, note: aiNote });
   } catch (e) {
-    return json({ error: e.message }, 500);
+    return failure(e, "தேடல் குறியீடு");
   }
 }

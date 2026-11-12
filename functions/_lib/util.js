@@ -19,11 +19,15 @@ export async function sign(secret, payload) {
 }
 export async function verify(secret, token) {
   if (!token || !token.includes(".")) return null;
-  const [body, sig] = token.split(".");
-  const ok = await crypto.subtle.verify("HMAC", await hmac(secret), unb64url(sig), enc.encode(body));
-  if (!ok) return null;
-  const payload = JSON.parse(dec.decode(unb64url(body)));
-  return payload.exp && payload.exp > Date.now() / 1000 ? payload : null;
+  try {
+    const [body, sig] = token.split(".");
+    const ok = await crypto.subtle.verify("HMAC", await hmac(secret), unb64url(sig), enc.encode(body));
+    if (!ok) return null;
+    const payload = JSON.parse(dec.decode(unb64url(body)));
+    return payload.exp && payload.exp > Date.now() / 1000 ? payload : null;
+  } catch {
+    return null; // சிதைந்த cookie: உள்நுழையாதவராகக் கருது
+  }
 }
 
 export function cookie(request, name) {
@@ -76,5 +80,11 @@ export async function ghPut(env, path, { text, base64, sha, message }) {
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.message || "GitHub " + r.status); e.status = r.status; throw e; }
   return j.content.sha;
+}
+/** உள் விவரங்களை வெளியே காட்டாமல் பிழை; முழு விவரம் Cloudflare log-ல் */
+export function failure(e, what) {
+  console.error(what, e);
+  if (e && (e.status === 409 || e.status === 422)) return json({ error: "conflict" }, 409);
+  return json({ error: `${what}: இயலவில்லை. சிறிது நேரம் கழித்து மீண்டும் முயலுங்கள்.` }, 500);
 }
 export const SITE_DIR = "public"; // GitHub repo-வில் தளக் கோப்புகள் இருக்கும் அடைவு

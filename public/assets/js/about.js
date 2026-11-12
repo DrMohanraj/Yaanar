@@ -6,7 +6,7 @@ Y.boot((ctx) => {
   const chief = team.chief ? { ...team.chief, role: team.chief.role || "முதன்மை ஆசிரியர்" } : null;
   const editors = (team.editors || []).slice(0, 4).map((p) => ({ ...p, role: p.role || "துணை ஆசிரியர்" }));
   const s = site.social || {};
-  const socials = [["Facebook", s.facebook], ["YouTube", s.youtube], ["Instagram", s.instagram]].filter(([, u]) => u);
+  const socials = [["Facebook", s.facebook], ["YouTube", s.youtube], ["Instagram", s.instagram]].filter(([, u]) => /^https?:\/\//i.test(u || ""));
   const img = (p, sizes, eager) =>
     `<img src="${esc(p.photo)}" ${Y.srcset(p.photo, sizes)} alt="${esc(p.name)}" ${eager ? "" : 'loading="lazy"'} width="1024" height="1024">`;
 

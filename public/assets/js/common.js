@@ -87,7 +87,7 @@ const Y = (() => {
   function footer(ctx) {
     const { site, cats } = ctx;
     const s = site.social || {};
-    const socials = [["Facebook", s.facebook], ["YouTube", s.youtube], ["Instagram", s.instagram]].filter(([, u]) => u);
+    const socials = [["Facebook", s.facebook], ["YouTube", s.youtube], ["Instagram", s.instagram]].filter(([, u]) => /^https?:\/\//i.test(u || ""));
     return `<footer class="footer">
       <div class="footer-in">
         <div><a class="brand" href="/">${esc(site.title)}</a><p class="about muted">${esc(site.footerText || "")}</p></div>
