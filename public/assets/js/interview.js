@@ -40,7 +40,7 @@ Y.boot((ctx) => {
           <p class="ttl">${esc(iv.title)}</p>
           <p class="meta"><span>${esc(iv.period || "")}</span><span>${qa.length} கேள்விகள்</span></p>
           <div class="by">
-            ${Y.people(iv).length ? `<div><span class="k">நேர்காணல் எடுத்தவர்${Y.people(iv).length > 1 ? "கள்" : ""}</span><span class="v">${Y.people(iv).map(esc).join(" · ")}</span></div>` : ""}
+            ${Y.people(iv).length ? `<div class="by-people"><span class="k">நேர்காணல் எடுத்தவர்${Y.people(iv).length > 1 ? "கள்" : ""}</span><span class="v pchips">${Y.people(iv).map(Y.personChip).join("")}</span></div>` : ""}
             ${iv.date ? `<div><span class="k">நேர்காணல் நாள்</span><span class="v">${esc(Y.fmtFull(iv.date))}</span></div>` : ""}
           </div>
           <p class="intro">${esc(iv.intro || iv.summary || "")}</p>

@@ -116,6 +116,18 @@ async function page(request, env, url) {
         type: "article",
       });
     }
+    if (url.pathname === "/interviewer") {
+      const p = (site.interviewers || []).find((x) => x.id === url.searchParams.get("id"));
+      if (!p) return res;
+      const n = interviews.filter((iv) => (iv.interviewers || []).includes(p.id)).length;
+      return withMeta(res, {
+        title: `${p.name} — நேர்கண்டவர் | ${siteTitle}`,
+        desc: clip(p.bio || `${siteTitle} இதழுக்காக ${n} நேர்காணல்களை எடுத்தவர்.`, 200),
+        image: p.photo ? abs(url.origin, p.photo) : "",
+        url: `${url.origin}/interviewer?id=${encodeURIComponent(p.id)}`,
+        type: "profile",
+      });
+    }
     // முகப்பு: சிறப்பு நேர்காணலின் படம்
     const featured = interviews.find((x) => x.id === site.featuredId) || interviews[0];
     return withMeta(res, {
@@ -131,7 +143,7 @@ async function page(request, env, url) {
 }
 
 async function sitemap(env, url) {
-  const { interviews } = await siteData(env, url.origin);
+  const { interviews, site } = await siteData(env, url.origin);
   const o = url.origin;
   const rows = [
     [`${o}/`, ""],
@@ -139,6 +151,7 @@ async function sitemap(env, url) {
     [`${o}/about`, ""],
     [`${o}/search`, ""],
     ...interviews.map((iv) => [`${o}/interview?id=${encodeURIComponent(iv.id)}`, /^\d{4}-\d{2}-\d{2}/.test(iv.date || "") ? iv.date.slice(0, 10) : ""]),
+    ...(site.interviewers || []).filter((p) => p && p.id).map((p) => [`${o}/interviewer?id=${encodeURIComponent(p.id)}`, ""]),
   ];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows
     .map(([loc, mod]) => `  <url><loc>${escXml(loc)}</loc>${mod ? `<lastmod>${mod}</lastmod>` : ""}</url>`)
@@ -158,7 +171,7 @@ export default {
 
     if (path === "/sitemap.xml") return secure(await sitemap(env, url));
     if (path === "/robots.txt") return secure(robots(url));
-    if ((path === "/" || path === "/interview") && (request.method === "GET" || request.method === "HEAD")) {
+    if ((path === "/" || path === "/interview" || path === "/interviewer") && (request.method === "GET" || request.method === "HEAD")) {
       return secure(await page(request, env, url));
     }
 

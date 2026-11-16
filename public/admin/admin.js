@@ -90,8 +90,9 @@
       <div class="row3"><div><label>வகை</label><input type="text" list="cats" data-p="category" value="${e(iv.category)}"></div>
         <div><label>நேர்காணல் தேதி</label><input type="date" data-p="date" value="${e(iv.date)}"></div>
         <div><label>அடையாளம் (ID — ஆங்கில எழுத்துகள்)</label><input type="text" data-p="id" value="${e(iv.id)}" ${S.savedIds?.has(iv.id) ? "readonly" : ""}></div></div>
-      <div class="row2"><div><label>நேர்காணல் எடுத்தவர் 1</label><input type="text" data-iw="0" value="${e((iv.interviewers || [])[0] || "")}"></div>
-        <div><label>நேர்காணல் எடுத்தவர் 2 (தேவையெனில்)</label><input type="text" data-iw="1" value="${e((iv.interviewers || [])[1] || "")}"></div></div>
+      <div class="row2"><div><label>நேர்காணல் எடுத்தவர் 1</label>${iwSelect(iv, 0)}</div>
+        <div><label>நேர்காணல் எடுத்தவர் 2 (தேவையெனில்)</label>${iwSelect(iv, 1)}</div></div>
+      <p class="muted hint">பட்டியலில் இல்லாதவரைச் சேர்க்க: “தளம் அமைப்பு” → “நேர்காணல் எடுத்தவர்கள்”.</p>
       <label>நேர்காணல் தலைப்பு</label><input type="text" data-p="title" value="${e(iv.title)}">
       <label>புகைப்படம்</label>
       <div class="photo"><img id="ph" src="${e(iv.photo)}" alt=""><div style="flex:1">
@@ -132,6 +133,28 @@
   }
   const warnText = (x) => (x.hl && !String(x.a).includes(x.hl) ? "⚠ இந்த வரி பதிலில் அப்படியே இல்லை; பதிலில் முன்னிலைப்படுத்தப்படாது (splash-ல் வரும்)." : "");
 
+  const roster = () => (S.site.interviewers = S.site.interviewers || []);
+  /* நேர்காணல் எடுத்தவரைப் பட்டியலிலிருந்து தேர்வு; பழைய பெயர் மட்டும் இருந்தால் அதையும் காட்டும் */
+  function iwSelect(iv, k) {
+    const val = (iv.interviewers || [])[k] || "";
+    const known = roster().some((p) => p.id === val);
+    return `<select data-iw="${k}"><option value="">— ${k ? "இல்லை" : "தேர்ந்தெடுக்கவும்"} —</option>
+      ${roster().map((p) => `<option value="${e(p.id)}" ${p.id === val ? "selected" : ""}>${e(p.name)}</option>`).join("")}
+      ${val && !known ? `<option value="${e(val)}" selected>${e(val)} (பட்டியலில் இல்லை)</option>` : ""}</select>`;
+  }
+  function interviewerFields(p, i) {
+    const prefix = `interviewers.${i}`;
+    const n = ivList().filter((iv) => (iv.interviewers || []).includes(p.id)).length;
+    return `<fieldset><legend>${e(p.name || "புதியவர்")} <span class="muted">· ${n} நேர்காணல்</span></legend><div class="row2">
+      <div><label>பெயர்</label><input type="text" data-s="${prefix}.name" value="${e(p.name)}"></div>
+      <div><label>இணைப்பு (விருப்பம்: இணையதளம் / சமூக ஊடகம்)</label><input type="url" data-s="${prefix}.link" value="${e(p.link)}"></div></div>
+      <label>சிறு அறிமுகம்</label><textarea data-s="${prefix}.bio" style="min-height:4rem">${e(p.bio)}</textarea>
+      <label>புகைப்படம் (சதுரம்; இல்லையெனில் பெயரின் முதல் எழுத்து வட்டத்தில் வரும்)</label><div class="photo"><img src="${e(p.photo)}" alt="" data-img="${prefix}"><div style="flex:1">
+        <input type="text" data-s="${prefix}.photo" value="${e(p.photo)}"><p style="margin:.4rem 0"><button class="btn sm" data-act="upload" data-target="${prefix}">பதிவேற்று</button>
+        ${p.id ? `<a class="btn sm" href="/interviewer.html?id=${encodeURIComponent(p.id)}" target="_blank" rel="noopener">பக்கத்தைப் பார்</a>` : ""}
+        <button class="btn sm danger" data-act="iw-del" data-i="${i}" ${n ? "disabled title='இவர் எடுத்த நேர்காணல்கள் உள்ளன'" : ""}>நீக்கு</button></p></div></div></fieldset>`;
+  }
+
   function personFields(prefix, p, label) {
     return `<fieldset><legend>${label}</legend><div class="row2">
       <div><label>பெயர்</label><input type="text" data-s="${prefix}.name" value="${e(p.name)}"></div>
@@ -156,6 +179,11 @@
           <div><label>Facebook முகவரி</label><input type="url" data-s="social.facebook" value="${e(so.facebook)}"></div>
           <div><label>YouTube முகவரி</label><input type="url" data-s="social.youtube" value="${e(so.youtube)}"></div>
           <div><label>Instagram முகவரி</label><input type="url" data-s="social.instagram" value="${e(so.instagram)}"></div></div></fieldset>
+      <h2 class="sec">நேர்காணல் எடுத்தவர்கள்</h2>
+      <p class="muted hint">இங்கே ஒருமுறை பதிவு செய்தால், ஒவ்வொரு நேர்காணலிலும் பட்டியலிலிருந்து தேர்ந்தெடுக்கலாம். ஒவ்வொருவருக்கும் தனிப் பக்கம் உருவாகும்.</p>
+      ${roster().map(interviewerFields).join("")}
+      <p><button class="btn" data-act="iw-add">+ புதிய நேர்காணல் எடுத்தவர்</button></p>
+      <h2 class="sec">ஆசிரியர் குழு</h2>
       ${personFields("team.chief", s.team.chief, "முதன்மை ஆசிரியர்")}
       ${s.team.editors.map((p, i) => personFields(`team.editors.${i}`, p, `துணை ஆசிரியர் ${i + 1}`)).join("")}
       <div class="bar"><button class="btn solid" data-act="save-site" ${S.busy ? "disabled" : ""}>சேமி (GitHub-ல் பதிவு)</button><span class="muted" id="dirty">${S.siteDirty ? "சேமிக்கப்படாத மாற்றங்கள் உள்ளன" : ""}</span></div>`;
@@ -191,6 +219,7 @@
     S.busy = false; render();
   }
   async function saveSite() {
+    if (roster().some((p) => !String(p.name || "").trim())) return toast("ஒவ்வொரு நேர்காணல் எடுத்தவருக்கும் பெயர் அவசியம்.", true);
     S.busy = true;
     try { S.siteSha = await put("data/site.json", S.site, S.siteSha, "site settings"); S.siteDirty = false; toast("சேமிக்கப்பட்டது ✓"); } catch { /* */ }
     S.busy = false; render();
@@ -266,6 +295,8 @@
     else if (act === "qa-up" && i > 0) { [iv.qa[i - 1], iv.qa[i]] = [iv.qa[i], iv.qa[i - 1]]; S.ivDirty = true; render(); }
     else if (act === "qa-down" && i < iv.qa.length - 1) { [iv.qa[i + 1], iv.qa[i]] = [iv.qa[i], iv.qa[i + 1]]; S.ivDirty = true; render(); }
     else if (act === "upload") upload(b.dataset.target);
+    else if (act === "iw-add") { roster().push({ id: "p-" + Date.now().toString(36), name: "", photo: "", bio: "" }); S.siteDirty = true; render(); }
+    else if (act === "iw-del") { if (confirm("இவரைப் பட்டியலிலிருந்து நீக்கவா?")) { roster().splice(i, 1); S.siteDirty = true; render(); } }
     else if (act === "save-iv") saveIv();
     else if (act === "save-site") saveSite();
     else if (act === "del") {

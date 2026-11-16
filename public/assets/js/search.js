@@ -104,7 +104,7 @@ Y.boot(async (ctx) => {
   }
   function hitHtml(h, m, ai) {
     const w = byId[h.c.iid];
-    const by = Y.people(w).length ? ` · நேர்கண்டவர்: ${Y.people(w).join(", ")}` : "";
+    const by = Y.people(w).length ? ` · நேர்கண்டவர்: ${Y.people(w).map((p) => p.name).join(", ")}` : "";
     const cite = `${w.name}${w.period ? ", " + w.period : ""} · நேர்காணல் ${Y.fmtFull(w.date)}${by} · கேள்வி ${h.c.n}`;
     const body = ai ? snippet(h.c.a, m, "head") : snippet(h.c.a, m);
     return `<article class="hit">

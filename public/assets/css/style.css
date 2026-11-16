@@ -977,3 +977,49 @@ a:hover>.story .icon{transform:translateX(4px)}
   .cards3 .more{padding:.5rem 0}
 }
 main[tabindex="-1"]:focus{outline:none}
+
+/* ===================================================================
+   நேர்காணல் எடுத்தவர்கள்: வட்டப் படங்கள், சிப்கள், தனிப் பக்கம்
+   =================================================================== */
+.av{flex:none;display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:center 22%;
+  background:var(--teal-deep);color:var(--primary-foreground);font-family:var(--font-display);font-weight:600;font-size:19px;line-height:1;
+  box-shadow:0 0 0 2px var(--background)}
+.av.sm{width:26px;height:26px;font-size:13px}
+.av.xl{width:8.5rem;height:8.5rem;font-size:3.4rem;box-shadow:0 0 0 4px var(--background),0 10px 28px oklch(0.2 0.03 215/.16)}
+
+/* நேர்காணல் பக்கம்: "நேர்காணல் எடுத்தவர்கள்" */
+.iv-head .by .by-people{align-items:center}
+.pchips{display:flex;flex-wrap:wrap;gap:.6rem 1.25rem}
+.pchip{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;font-size:19px;color:var(--foreground)}
+a.pchip span{border-bottom:1px solid color-mix(in oklch,var(--primary) 55%,transparent);transition:border-color .2s,color .2s}
+a.pchip:hover span{color:var(--primary-text);border-bottom-color:var(--primary)}
+a.pchip:hover .av{box-shadow:0 0 0 2px var(--background),0 0 0 4px var(--primary)}
+
+/* அட்டைகளில்: சிறிய படங்கள் ஒன்றின் மேல் ஒன்று */
+.gcard .by{align-items:center}
+.gcard .by .avs{display:inline-flex;margin-right:.15rem}
+.gcard .by .avs .av+.av{margin-left:-8px}
+
+/* நேர்கண்டவர் பக்கம் */
+.pp-head{display:grid;gap:1.5rem;justify-items:start;padding:3rem var(--gutter) 2.5rem;border-bottom:1px solid var(--border)}
+@media(min-width:768px){.pp-head{grid-template-columns:auto 1fr;align-items:center;gap:2.5rem;padding:4rem var(--gutter) 3rem}}
+.pp-head h1{font-family:var(--font-display);font-weight:600;font-size:clamp(2.1rem,4.4vw,3.2rem);line-height:1.3}
+.pp-meta{margin-top:.4rem;font-size:17px;color:var(--primary-text)}
+.pp-bio{margin-top:1rem;max-width:40rem;font-family:"Noto Serif Tamil",serif;font-size:1.2rem;line-height:1.9}
+.pp-link{margin-top:.9rem}
+.pp-link a{border-bottom:1px solid var(--primary);padding:.3rem 0}
+.pp-list>h2{font-family:var(--font-display);font-weight:600;font-size:1.6rem;padding:2rem var(--gutter) 1.25rem;display:flex;align-items:center;gap:1rem}
+.pp-list>h2::before{content:"";width:2.5rem;height:1px;background:var(--primary)}
+.pp-empty,.pp-with{padding:0 var(--gutter) 2.5rem}
+.pp-with a{color:var(--foreground);border-bottom:1px solid var(--primary);display:inline-block;padding:.35rem 0}
+.pp-missing{padding:4rem var(--gutter);max-width:40rem}
+.pp-missing h1{font-family:var(--font-display);font-weight:600;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.35}
+.pp-missing p{margin-top:1rem}
+@media(max-width:767px){
+  .pp-head{padding:2rem var(--gutter) 2rem;gap:1.1rem}
+  .av.xl{width:6.5rem;height:6.5rem;font-size:2.6rem}
+  .pp-head h1{font-size:2rem}
+  .pp-bio{font-size:1.1rem;line-height:1.85}
+  .pp-list>h2{font-size:1.35rem;padding-top:1.5rem;padding-bottom:.5rem}
+  .pchip{font-size:17px}
+}

@@ -29,15 +29,33 @@ const Y = (() => {
     const [y, m, day] = d.split("-");
     return `${day ? +day + " " : ""}${MONTHS_FULL[(+m || 1) - 1]} ${y}`;
   }
-  const people = (iv) => (iv.interviewers || []).map((x) => String(x).trim()).filter(Boolean).slice(0, 2);
+  /* நேர்காணல் எடுத்தவர்கள்: site.json-ல் உள்ள பட்டியலிலிருந்து (id அல்லது பழைய பெயர் வழியாக) */
+  const people = (iv) => iv._people || [];
+  function resolvePeople(iv, roster) {
+    return (iv.interviewers || []).map((x) => String(x || "").trim()).filter(Boolean).slice(0, 2)
+      .map((x) => roster.find((p) => p.id === x || p.name === x) || { name: x });
+  }
+  const personUrl = (id) => `/interviewer.html?id=${encodeURIComponent(id)}`;
+  /* சிறிய வட்டப் படம்; படம் இல்லையெனில் பெயரின் முதல் எழுத்து */
+  function avatar(p, cls = "") {
+    if (p.photo) return `<img class="av ${cls}" src="${esc(p.photo)}" alt="" loading="lazy" width="96" height="96">`;
+    const first = graphemes(String(p.name || "?").trim())[0] || "?";
+    return `<span class="av av-i ${cls}" aria-hidden="true">${esc(first)}</span>`;
+  }
+  /* நேர்கண்டவர் சிப்: படம் + பெயர்; பக்கம் இருந்தால் இணைப்பு */
+  const personChip = (p) => p.id
+    ? `<a class="pchip" href="${personUrl(p.id)}">${avatar(p)}<span>${esc(p.name)}</span></a>`
+    : `<span class="pchip">${avatar(p)}<span>${esc(p.name)}</span></span>`;
 
   async function load() {
     const [site, data] = await Promise.all([json("/data/site.json"), json("/data/interviews.json")]);
+    const roster = (site.interviewers || []).filter((p) => p && p.id && p.name);
     const list = (data.interviews || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    list.forEach((iv) => { iv._people = resolvePeople(iv, roster); });
     const byId = Object.fromEntries(list.map((i) => [i.id, i]));
     const featured = byId[site.featuredId] || list[0];
     const cats = [...new Set(list.map((i) => i.category).filter(Boolean))];
-    return { site, list, byId, featured, cats };
+    return { site, list, byId, featured, cats, roster };
   }
 
   const ivUrl = (id, n) => `/interview.html?id=${encodeURIComponent(id)}${n ? "#q-" + n : ""}`;
@@ -155,9 +173,9 @@ const Y = (() => {
       <div class="meta"><span class="catname">${esc(iv.category)}</span><i></i><span class="muted">${esc(fmtFull(iv.date))}</span></div>
       <div class="story"><div><h3>${esc(iv.title)}</h3><p>${esc(iv.name)}</p></div>${icons.arrow("lg")}</div>
       ${iv.summary ? `<p class="sum">${esc(iv.summary)}</p>` : ""}
-      ${people(iv).length ? `<p class="by"><span>நேர்காணல்</span>${people(iv).map(esc).join(" · ")}</p>` : ""}
+      ${people(iv).length ? `<p class="by"><span class="avs">${people(iv).map((p) => avatar(p, "sm")).join("")}</span><span class="by-k">நேர்காணல்</span>${people(iv).map((p) => esc(p.name)).join(" · ")}</p>` : ""}
     </a>`;
   }
 
-  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, srcset, ivUrl, fmtDate, fmtFull, people, card };
+  return { esc, pad, icons, json, load, boot, topbar, footer, graphemes, srcset, ivUrl, fmtDate, fmtFull, people, card, avatar, personChip, personUrl };
 })();

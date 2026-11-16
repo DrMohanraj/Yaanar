@@ -11,7 +11,7 @@ directory = "public"
 binding = "ASSETS"
 not_found_handling = "404-page"
 # /api/* மட்டுமல்ல: முகப்பு, நேர்காணல் (பகிர்வு முன்னோட்டம்), sitemap, robots
-run_worker_first = ["/api/*", "/", "/interview", "/sitemap.xml", "/robots.txt"]
+run_worker_first = ["/api/*", "/", "/interview", "/interviewer", "/sitemap.xml", "/robots.txt"]
 
 # AI தேடல்: ஒரு IP-க்கு நிமிடத்துக்கு 20 தேடல்கள் வரை (AI ஒதுக்கீடு தீராமல்)
 [[ratelimits]]

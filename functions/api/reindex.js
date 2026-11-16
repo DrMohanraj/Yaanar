@@ -49,8 +49,11 @@ export async function onRequestPost({ request, env }) {
     let r2 = 0;
     if (env.INTERVIEWS_BUCKET) {
       const keep = new Set();
+      const siteSrc = await ghGet(env, `${SITE_DIR}/data/site.json`);
+      const roster = siteSrc ? JSON.parse(siteSrc.text).interviewers || [] : [];
+      const nameOf = (x) => (roster.find((p) => p.id === x) || {}).name || x; // id → பெயர்
       for (const iv of interviews) {
-        const by = (iv.interviewers || []).filter(Boolean).join(", ");
+        const by = (iv.interviewers || []).filter(Boolean).map(nameOf).join(", ");
         for (const [i, x] of (iv.qa || []).entries()) {
           if (!(x.q || x.a)) continue;
           const key = `${iv.id}/q-${String(i + 1).padStart(2, "0")}.md`;
