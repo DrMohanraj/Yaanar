@@ -11,7 +11,7 @@ Y.boot((ctx) => {
     `<img src="${esc(p.photo)}" ${Y.srcset(p.photo, sizes)} alt="${esc(p.name)}" ${eager ? "" : 'loading="lazy"'} width="1024" height="1024">`;
 
   document.getElementById("app").innerHTML = `${Y.topbar(ctx, "about")}
-    <main class="team-page">
+    <main id="main" tabindex="-1" class="team-page">
       <h1 class="sr-only">ஆசிரியர் குழு</h1>
 
       <section class="bento" aria-label="ஆசிரியர் குழு">

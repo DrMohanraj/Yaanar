@@ -54,8 +54,8 @@ const Y = (() => {
 
   function topbar(ctx, active) {
     const items = navItems(ctx).slice(0, 4);
-    return `<header class="topbar">
-      <button class="menu-btn" aria-label="மெனு" aria-expanded="false">${icons.menu("lg primary")}</button>
+    return `<a class="skip" href="#main">உள்ளடக்கத்துக்குச் செல்</a><header class="topbar">
+      <button class="menu-btn" aria-label="மெனு" aria-expanded="false" aria-controls="site-menu">${icons.menu("lg primary")}</button>
       <a class="brand" href="/">${esc(ctx.site.title)}</a>
       <nav class="nav-inline label" aria-label="முதன்மை மெனு">
         ${items.map((n) => `<a href="${n.href}" ${n.key === active || n.href.replace(".html", "") === "/" + active ? 'aria-current="page"' : ""}>${n.t}</a>`).join("")}
@@ -67,21 +67,45 @@ const Y = (() => {
   function overlay(ctx) {
     const el = document.createElement("div");
     el.className = "menu-overlay";
+    el.id = "site-menu";
     el.hidden = true;
     el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
     el.setAttribute("aria-label", "மெனு");
     el.innerHTML = `<div class="bar"><a class="brand" href="/">${esc(ctx.site.title)}</a>
       <button class="menu-close" aria-label="மூடு">${icons.close("lg primary")}</button></div>
       <nav>${navItems(ctx).map((n) => `<a href="${n.href}">${n.t}</a>`).join("")}</nav>`;
     document.body.appendChild(el);
-    const open = () => { el.hidden = false; document.body.style.overflow = "hidden"; el.querySelector(".menu-close").focus(); };
-    const close = () => { el.hidden = true; document.body.style.overflow = ""; };
+    let opener = null;
+    const btns = () => document.querySelectorAll(".menu-btn");
+    const open = (from) => {
+      opener = from || null;
+      el.hidden = false; document.body.style.overflow = "hidden";
+      btns().forEach((b) => b.setAttribute("aria-expanded", "true"));
+      el.querySelector(".menu-close").focus();
+    };
+    const close = () => {
+      if (el.hidden) return;
+      el.hidden = true; document.body.style.overflow = "";
+      btns().forEach((b) => b.setAttribute("aria-expanded", "false"));
+      if (opener) opener.focus();
+    };
     document.addEventListener("click", (e) => {
-      if (e.target.closest(".menu-btn")) open();
+      if (e.target.closest(".menu-btn")) open(e.target.closest(".menu-btn"));
       else if (e.target.closest(".menu-close")) close();
       else if (e.target.closest(".menu-overlay a")) close();
     });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !el.hidden) close(); });
+    document.addEventListener("keydown", (e) => {
+      if (el.hidden) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "Tab") {
+        // மெனு திறந்திருக்கும்போது கவனம் அதற்குள்ளேயே சுற்றும்
+        const f = [...el.querySelectorAll("a, button")];
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
   }
 
   function footer(ctx) {

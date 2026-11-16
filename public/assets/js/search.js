@@ -61,7 +61,7 @@ Y.boot(async (ctx) => {
   const app = document.getElementById("app");
   const initial = new URLSearchParams(location.search).get("q") || "";
   app.innerHTML = `${Y.topbar(ctx, "search")}
-    <main>
+    <main id="main" tabindex="-1">
       <div class="page-head">
         <p class="label" style="color:var(--primary-text)">ஆய்வு மாணவர்களுக்காக</p><span class="rule" style="margin-top:.75rem"></span>
         <h1>ஆய்வுத் தேடல்</h1>
@@ -73,7 +73,7 @@ Y.boot(async (ctx) => {
           <button class="btn solid" type="submit">தேடு</button></div>
         <div class="rs-opts"><label><input type="checkbox" id="ai" checked> AI மூலம் தொடர்புடைய பகுதிகளையும் காட்டு (தேடு பொத்தானை அழுத்தும்போது)</label></div>
       </form>
-      <p class="rs-note" id="note"></p>
+      <p class="rs-note" id="note" aria-live="polite"></p>
       <div id="out"></div>
       ${ASK_ENABLED ? `<section class="ask rs-sec" aria-labelledby="ask-h">
         <h2 id="ask-h"><i></i>ஆய்வாளர் உதவி</h2>

@@ -27,7 +27,7 @@ Y.boot((ctx) => {
 
   document.title = `${site.title} — ${site.tagline || "நேர்காணல் இதழ்"}`;
   app.innerHTML = `${Y.topbar(ctx, "")}<div class="page-grid solo">
-    <main>
+    <main id="main" tabindex="-1">
       <section class="hero">
         <div class="hero-text">
           <p class="label hero-kicker">${esc(site.heroKicker || "")}</p>
@@ -45,7 +45,7 @@ Y.boot((ctx) => {
         </div>
         <div class="hero-img"><img src="${esc(featured.photo)}" ${Y.srcset(featured.photo, "(min-width:1024px) 46vw, 100vw")} alt="${esc(featured.name)}" width="1024" height="1024"></div>
       </section>
-      <section class="cards3" aria-label="மேலும் நேர்காணல்கள்">
+      <section class="cards3" aria-labelledby="more-h"><h2 class="sr-only" id="more-h">மேலும் நேர்காணல்கள்</h2>
         ${cards.map((c, i) => `<a class="card3" href="${Y.ivUrl(c.id)}">
           <img src="${esc(c.photo)}" ${Y.srcset(c.photo, "(min-width:768px) 30vw, 100vw")} alt="${esc(c.name)}" loading="lazy" width="1024" height="640">
           <div class="no">0${i + 1}<i></i><span class="muted">${esc(c.category)}</span></div>

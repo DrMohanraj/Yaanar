@@ -7,7 +7,7 @@ Y.boot((ctx) => {
   let q = params.get("q") || "";
 
   document.getElementById("app").innerHTML = `${Y.topbar(ctx, "collection")}
-    <main>
+    <main id="main" tabindex="-1">
       <h1 class="sr-only">எல்லா நேர்காணல்களும்</h1>
       <div class="tools">
         <label class="field">${icons.search()}<span class="sr-only">தேடல்</span>
@@ -15,6 +15,7 @@ Y.boot((ctx) => {
         <div class="chips" id="chips" role="group" aria-label="வகை வடிகட்டி"></div>
       </div>
       <p class="count" id="count" aria-live="polite"></p>
+      <h2 class="sr-only">நேர்காணல்கள்</h2>
       <div class="grid-cards" id="grid"></div>
     </main>${Y.footer(ctx)}`;
 

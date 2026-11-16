@@ -620,7 +620,7 @@ a:hover>.story .icon{transform:translateX(4px)}
 .ask-row .btn:disabled{opacity:.5;cursor:wait}
 #ask-out h3{font-weight:600;font-size:1.25rem;margin-top:1.5rem}
 #ask-out .hit{padding-left:0;padding-right:0}
-.ask-answer{max-width:46rem;padding:1.25rem 1.5rem;margin-top:.5rem;background:var(--card);border-left:4px solid var(--teal-deep)}
+.ask-answer{max-width:46rem;padding:1.25rem 1.5rem;margin-top:.5rem;background:var(--card);border:1px solid color-mix(in oklch,var(--teal-deep) 30%,transparent);border-radius:6px}
 .ask-answer h3{margin-top:0!important}
 .ask-answer p{margin-top:.75rem;font-family:"Noto Serif Tamil",serif;font-size:1.125rem;line-height:2;white-space:pre-wrap}
 .ask-answer .ask-warn{font-family:var(--font-body);font-size:17px;line-height:1.7;color:var(--muted-foreground);white-space:normal}
@@ -920,3 +920,60 @@ a:hover>.story .icon{transform:translateX(4px)}
 }
 @media(max-width:767px) and (max-height:740px){.hero-img{height:34svh;min-height:12rem}.hero-text{padding-top:1rem;padding-bottom:1rem}}
 @media(max-width:899px){.bento .role{color:oklch(0.93 0.03 190)}.bento .tp-person::after{background:linear-gradient(to top,oklch(0.18 0.03 215/.92) 0%,oklch(0.18 0.03 215/.6) 38%,transparent 70%)}}
+
+/* ===================================================================
+   நேர்காணல் வாசிப்பு: கேள்விப் பட்டியல், நிலையான வாசிப்புப் பத்தி, அணுகல்தன்மை
+   =================================================================== */
+/* வாசிப்புப் பத்தி எப்போதும் இடப்புறம் (முன்பு ஒவ்வொரு கேள்விக்கும் இடம் மாறியது) */
+.qa.flip .qa-main{order:0}
+
+/* கணினிப் பட்டை: எண்ணின் மேல் கேள்வியின் உரை */
+.rail a{position:relative}
+.rail a::after{content:attr(data-q);position:absolute;left:calc(100% + .9rem);top:50%;z-index:6;width:max-content;max-width:24rem;
+  padding:.55rem .85rem;background:var(--ink);color:var(--primary-foreground);font-size:16px;font-weight:400;line-height:1.55;text-align:left;
+  box-shadow:0 6px 18px oklch(0.2 0.03 215/.18);opacity:0;visibility:hidden;transform:translate(-4px,-50%);
+  transition:opacity .18s ease-out,transform .18s ease-out,visibility .18s;pointer-events:none}
+.rail a:hover::after,.rail a:focus-visible::after{opacity:1;visibility:visible;transform:translate(0,-50%)}
+
+/* கைபேசி/டேப்லெட்: "கே. 7 / 20" பொத்தான் (கட்டைவிரல் எட்டும் கீழ் வலம்) */
+.qnav{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:40;
+  display:inline-flex;align-items:center;gap:.15rem;min-height:48px;padding:0 1.15rem;border-radius:999px;
+  background:var(--ink);color:var(--primary-foreground);font-size:17px;font-weight:500;letter-spacing:.01em;
+  box-shadow:0 8px 22px oklch(0.2 0.03 215/.28);transition:transform .2s ease-out}
+.qnav b{font-weight:700;color:color-mix(in oklch,var(--primary) 45%,white);font-variant-numeric:tabular-nums}
+.qnav:active{transform:scale(.96)}
+.qnav[hidden]{display:none}
+@media(min-width:1100px){.qnav{display:none!important}}
+
+/* கேள்விப் பட்டியல் (கீழிருந்து எழும் தாள்) */
+.qsheet{position:fixed;inset:auto 0 0 0;margin:0 auto;width:100%;max-width:40rem;max-height:78svh;padding:0;border:0;
+  border-radius:.75rem .75rem 0 0;background:var(--background);color:var(--foreground);box-shadow:0 -10px 30px oklch(0.2 0.03 215/.2);overflow:hidden}
+.qsheet[open]{display:flex;flex-direction:column;animation:sheetin .32s cubic-bezier(.2,.8,.2,1)}
+.qsheet::backdrop{background:oklch(0.18 0.03 215/.45)}
+@keyframes sheetin{from{transform:translateY(100%)}to{transform:none}}
+.qsheet-head{display:flex;align-items:center;justify-content:space-between;padding:.75rem .75rem .75rem var(--gutter);border-bottom:1px solid var(--border)}
+.qsheet-head h2{font-family:var(--font-display);font-weight:600;font-size:1.3rem}
+.qsheet-x{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center}
+.qsheet ol{list-style:none;margin:0;padding:.5rem 0 calc(1rem + env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain}
+.qsheet a{display:grid;grid-template-columns:2.2rem 1fr;gap:.5rem;padding:.75rem var(--gutter);font-size:17px;line-height:1.55}
+.qsheet a .n{color:var(--muted-foreground);font-variant-numeric:tabular-nums}
+.qsheet a:hover{background:color-mix(in oklch,var(--primary) 7%,transparent)}
+.qsheet a[aria-current]{background:color-mix(in oklch,var(--pink) 9%,transparent)}
+.qsheet a[aria-current] .n,.qsheet a[aria-current] .t{color:var(--pink);font-weight:600}
+@media(prefers-reduced-motion:reduce){.qsheet[open]{animation:none}.rail a::after{transition:none}}
+
+/* உள்ளடக்கத்துக்குத் தாவும் இணைப்பு (விசைப்பலகை / திரை வாசிப்பான்) */
+.skip{position:absolute;left:var(--gutter);top:-100px;z-index:100;padding:.65rem 1.1rem;background:var(--ink);color:var(--primary-foreground);font-size:17px}
+.skip:focus{top:.6rem}
+
+/* தொடு இலக்குகள் குறைந்தது 44px */
+.menu-btn,.menu-close,.topicons a{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.menu-btn{margin-left:-10px}
+.topicons a{margin-right:-12px}
+.iv-head .txt>a.label{display:inline-block;padding:.6rem 0;margin:-.6rem 0}
+@media(max-width:767px){
+  .footer li a{display:inline-block;padding:.35rem 0}
+  .hero .cta{min-height:44px}
+  .cards3 .more{padding:.5rem 0}
+}
+main[tabindex="-1"]:focus{outline:none}

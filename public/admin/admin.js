@@ -67,6 +67,7 @@
           ${f ? `<button class="btn sm" data-act="open" data-id="${e(f.id)}">சிறப்பு எழுத்தாளரைத் திருத்து</button>` : ""}
           <span class="muted">வேறு ஒருவரைச் சிறப்பாக்க, அவரது படிவத்தில் “முகப்பில் சிறப்பாகக் காட்டு” என்பதைத் தேர்ந்து சேமிக்கவும்.</span></div>${ivView()}` : siteView()}
       </main>`;
+    starCount();
   }
 
   function ivView() {
@@ -120,7 +121,14 @@
       <label>கேள்வி</label><input type="text" data-qa="${i}.q" value="${e(x.q)}">
       <label>பதில் (பத்திகளைப் பிரிக்க ஒரு வெற்று வரி விடுங்கள்)</label><textarea data-qa="${i}.a">${e(x.a)}</textarea>
       <label>Splash மேற்கோள் — பதிலிலிருந்து முக்கிய வரி / சொற்றொடரை அப்படியே நகலெடுத்து இடுங்கள்</label>
-      <input type="text" data-qa="${i}.hl" value="${e(x.hl)}"><div class="warn" data-warn="${i}">${warnText(x)}</div></div>`;
+      <input type="text" data-qa="${i}.hl" value="${e(x.hl)}"><div class="warn" data-warn="${i}">${warnText(x)}</div>
+      <label class="check"><input type="checkbox" data-star="${i}" ${x.star ? "checked" : ""}> இந்த வரியைக் குமிழாகக் காட்டு (ஒரு நேர்காணலுக்கு 3–5 போதும்; எதையும் தேர்ந்தெடுக்காவிட்டால் தானாக 4 வரும்) <span class="muted" data-starcount></span></label></div>`;
+  }
+  /* குமிழ் எண்ணிக்கை: 5-ஐத் தாண்டினால் எச்சரிக்கை */
+  function starCount() {
+    const iv = S.ivs && cur(); if (!iv) return;
+    const n = (iv.qa || []).filter((x) => x.star).length;
+    root.querySelectorAll("[data-starcount]").forEach((el) => { el.textContent = n ? `(இப்போது ${n}${n > 5 ? " — அதிகம்; 3–5 போதும்" : ""})` : ""; });
   }
   const warnText = (x) => (x.hl && !String(x.a).includes(x.hl) ? "⚠ இந்த வரி பதிலில் அப்படியே இல்லை; பதிலில் முன்னிலைப்படுத்தப்படாது (splash-ல் வரும்)." : "");
 
@@ -230,6 +238,10 @@
       iv.interviewers = arr; markDirty("ivDirty");
     } else if (t.dataset.hero !== undefined && iv) {
       iv.heroLines = iv.heroLines || []; iv.heroLines[+t.dataset.hero] = t.value; markDirty("ivDirty");
+    } else if (t.dataset.star !== undefined && iv) {
+      const q = iv.qa[+t.dataset.star];
+      if (t.checked) q.star = true; else delete q.star;
+      markDirty("ivDirty"); starCount();
     } else if (t.dataset.qa !== undefined && iv) {
       const [i, f] = t.dataset.qa.split("."); iv.qa[+i][f] = t.value; markDirty("ivDirty");
       const w = root.querySelector(`[data-warn="${i}"]`); if (w) w.textContent = warnText(iv.qa[+i]);
