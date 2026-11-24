@@ -65,11 +65,21 @@ const gh = (env, path, init = {}) =>
     headers: { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "yaanar-admin", "X-GitHub-Api-Version": "2022-11-28", ...(init.headers || {}) },
   });
 
-export async function ghGet(env, path) {
-  const r = await gh(env, path);
+/** shaOnly: உள்ளடக்கம் தேவையில்லாதபோது (பெரிய கோப்புகளை இறக்காமல்) */
+export async function ghGet(env, path, { shaOnly = false } = {}) {
+  const r = await gh(env, path, { headers: { Accept: "application/vnd.github.object+json" } });
   if (r.status === 404) return null;
   if (!r.ok) throw new Error("GitHub " + r.status + " " + (await r.text()));
   const j = await r.json();
+  if (shaOnly) return { sha: j.sha, text: null };
+  // 1 MB-க்கு மேல் GitHub உள்ளடக்கத்தைத் தராது (encoding: none); அதே sha-வின் blob-ஐ எடு
+  if (j.encoding !== "base64" || (!j.content && j.size > 0)) {
+    const b = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/git/blobs/${j.sha}`, {
+      headers: { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: "application/vnd.github+json", "User-Agent": "yaanar-admin", "X-GitHub-Api-Version": "2022-11-28" },
+    });
+    if (!b.ok) throw new Error("GitHub blob " + b.status + " " + (await b.text()));
+    return { sha: j.sha, text: b64ToUtf8((await b.json()).content) };
+  }
   return { sha: j.sha, text: b64ToUtf8(j.content) };
 }
 export async function ghPut(env, path, { text, base64, sha, message }) {

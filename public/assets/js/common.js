@@ -33,7 +33,8 @@ const Y = (() => {
   const people = (iv) => iv._people || [];
   function resolvePeople(iv, roster) {
     return (iv.interviewers || []).map((x) => String(x || "").trim()).filter(Boolean).slice(0, 2)
-      .map((x) => roster.find((p) => p.id === x || p.name === x) || { name: x });
+      .map((x) => roster.find((p) => p.id === x || p.name === x) || (/^[a-z0-9][a-z0-9-]*$/.test(x) ? null : { name: x })) // பட்டியலில் இல்லாத id வாசகருக்குத் தெரியாது
+      .filter((p, i, all) => p && all.findIndex((y) => y && y.name === p.name) === i);
   }
   const personUrl = (id) => `/interviewer.html?id=${encodeURIComponent(id)}`;
   /* சிறிய வட்டப் படம்; படம் இல்லையெனில் பெயரின் முதல் எழுத்து */

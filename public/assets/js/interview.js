@@ -21,7 +21,7 @@ Y.boot((ctx) => {
   /* குமிழ் (splash): ஆசிரியர் "star" எனக் குறித்த 3–5 வரிகளுக்கு மட்டும்.
      எதுவும் குறிக்கப்படவில்லையெனில் முக்கிய வரியுள்ள கேள்விகளில் சீராக இடைவெளி விட்டு 4 */
   const withHl = qa.map((x, i) => (x.hl ? i : -1)).filter((i) => i >= 0);
-  const starred = qa.some((x) => x.star);
+  const starred = qa.some((x) => x.star && x.hl);
   const autoPick = new Set(withHl.length <= 4 ? withHl : [0, 1, 2, 3].map((k) => withHl[Math.round((k * (withHl.length - 1)) / 3)]));
   const hasSplash = (x, i) => !!x.hl && (starred ? !!x.star : autoPick.has(i));
 

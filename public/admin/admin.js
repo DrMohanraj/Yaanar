@@ -123,12 +123,13 @@
       <label>பதில் (பத்திகளைப் பிரிக்க ஒரு வெற்று வரி விடுங்கள்)</label><textarea data-qa="${i}.a">${e(x.a)}</textarea>
       <label>Splash மேற்கோள் — பதிலிலிருந்து முக்கிய வரி / சொற்றொடரை அப்படியே நகலெடுத்து இடுங்கள்</label>
       <input type="text" data-qa="${i}.hl" value="${e(x.hl)}"><div class="warn" data-warn="${i}">${warnText(x)}</div>
-      <label class="check"><input type="checkbox" data-star="${i}" ${x.star ? "checked" : ""}> இந்த வரியைக் குமிழாகக் காட்டு (ஒரு நேர்காணலுக்கு 3–5 போதும்; எதையும் தேர்ந்தெடுக்காவிட்டால் தானாக 4 வரும்) <span class="muted" data-starcount></span></label></div>`;
+      <label class="check"><input type="checkbox" data-star="${i}" ${x.star && hasLine(x) ? "checked" : ""} ${hasLine(x) ? "" : "disabled"}> இந்த வரியைக் குமிழாகக் காட்டு (ஒரு நேர்காணலுக்கு 3–5 போதும்; எதையும் தேர்ந்தெடுக்காவிட்டால் தானாக 4 வரும்) <span class="muted" data-starcount></span></label></div>`;
   }
   /* குமிழ் எண்ணிக்கை: 5-ஐத் தாண்டினால் எச்சரிக்கை */
+  function hasLine(x) { return !!String(x.hl || "").trim(); }
   function starCount() {
     const iv = S.ivs && cur(); if (!iv) return;
-    const n = (iv.qa || []).filter((x) => x.star).length;
+    const n = (iv.qa || []).filter((x) => x.star && hasLine(x)).length;
     root.querySelectorAll("[data-starcount]").forEach((el) => { el.textContent = n ? `(இப்போது ${n}${n > 5 ? " — அதிகம்; 3–5 போதும்" : ""})` : ""; });
   }
   const warnText = (x) => (x.hl && !String(x.a).includes(x.hl) ? "⚠ இந்த வரி பதிலில் அப்படியே இல்லை; பதிலில் முன்னிலைப்படுத்தப்படாது (splash-ல் வரும்)." : "");
@@ -139,7 +140,7 @@
     const val = (iv.interviewers || [])[k] || "";
     const known = roster().some((p) => p.id === val);
     return `<select data-iw="${k}"><option value="">— ${k ? "இல்லை" : "தேர்ந்தெடுக்கவும்"} —</option>
-      ${roster().map((p) => `<option value="${e(p.id)}" ${p.id === val ? "selected" : ""}>${e(p.name)}</option>`).join("")}
+      ${roster().map((p) => `<option value="${e(p.id)}" ${p.id === val ? "selected" : ""}>${e(p.name || "(பெயரிடப்படவில்லை)")}</option>`).join("")}
       ${val && !known ? `<option value="${e(val)}" selected>${e(val)} (பட்டியலில் இல்லை)</option>` : ""}</select>`;
   }
   function interviewerFields(p, i) {
@@ -200,8 +201,15 @@
       throw err;
     }
   }
+  /* site.json-ஐச் சேமிக்கும் எல்லா வழிகளிலும்: பெயரில்லாதவர் பட்டியலில் இருக்கக் கூடாது */
+  function rosterOk() {
+    if (roster().every((p) => String(p.name || "").trim())) return true;
+    toast("“தளம் அமைப்பு” பகுதியில் பெயரில்லாத நேர்காணல் எடுத்தவர் உள்ளார். பெயரிடுங்கள் அல்லது நீக்குங்கள்.", true);
+    return false;
+  }
   async function saveIv() {
     const iv = cur(); if (!iv) return;
+    if (!rosterOk()) return;
     if (!iv.name.trim()) return toast("பெயர் அவசியம்.", true);
     if (!/^[a-z0-9][a-z0-9-]*$/i.test(iv.id)) return toast("ID-ல் ஆங்கில எழுத்து, எண், '-' மட்டும் இருக்க வேண்டும்.", true);
     if (ivList().filter((i) => i.id === iv.id).length > 1) return toast("இந்த ID ஏற்கெனவே உள்ளது.", true);
@@ -219,7 +227,7 @@
     S.busy = false; render();
   }
   async function saveSite() {
-    if (roster().some((p) => !String(p.name || "").trim())) return toast("ஒவ்வொரு நேர்காணல் எடுத்தவருக்கும் பெயர் அவசியம்.", true);
+    if (!rosterOk()) return;
     S.busy = true;
     try { S.siteSha = await put("data/site.json", S.site, S.siteSha, "site settings"); S.siteDirty = false; toast("சேமிக்கப்பட்டது ✓"); } catch { /* */ }
     S.busy = false; render();
@@ -274,6 +282,12 @@
     } else if (t.dataset.qa !== undefined && iv) {
       const [i, f] = t.dataset.qa.split("."); iv.qa[+i][f] = t.value; markDirty("ivDirty");
       const w = root.querySelector(`[data-warn="${i}"]`); if (w) w.textContent = warnText(iv.qa[+i]);
+      if (f === "hl") { // முக்கிய வரி இல்லாமல் குமிழ் இல்லை
+        const box = root.querySelector(`[data-star="${i}"]`), ok = hasLine(iv.qa[+i]);
+        if (!ok) delete iv.qa[+i].star;
+        if (box) { box.disabled = !ok; if (!ok) box.checked = false; }
+        starCount();
+      }
     } else if (t.dataset.s !== undefined) {
       setPath(S.site, t.dataset.s, t.value); markDirty("siteDirty");
       if (t.dataset.s.endsWith(".photo")) { const im = root.querySelector(`[data-img="${t.dataset.s.replace(/\.photo$/, "")}"]`); if (im) im.src = t.value; }
@@ -300,6 +314,7 @@
     else if (act === "save-iv") saveIv();
     else if (act === "save-site") saveSite();
     else if (act === "del") {
+      if (!rosterOk()) return;
       if (!confirm(`“${iv.name}” நேர்காணலை நிரந்தரமாக நீக்கவா?`)) return;
       S.ivs.interviews = ivList().filter((x) => x.id !== iv.id);
       if (S.site.featuredId === iv.id) { S.site.featuredId = (sorted()[0] || {}).id || ""; S.siteDirty = true; }

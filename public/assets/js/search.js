@@ -53,6 +53,7 @@ Y.boot(async (ctx) => {
   /* ---------- தேடல் குறியீடு ---------- */
   let chunks;
   try { chunks = (await Y.json("/data/search-index.json")).chunks; } catch { chunks = null; }
+  if (chunks) chunks = chunks.filter((c) => byId[c.iid]); // நீக்கப்பட்ட நேர்காணலின் பழைய பகுதிகள்
   if (!chunks || !chunks.length) {
     chunks = ctx.list.flatMap((iv) => (iv.qa || []).map((x, i) => ({ id: `${iv.id}#${i + 1}`, iid: iv.id, n: i + 1, q: x.q, a: x.a, hl: x.hl || "" })));
   }
@@ -148,9 +149,10 @@ Y.boot(async (ctx) => {
       const have = new Set(hits.map((h) => h.c.id));
       const rel = (data.results || []).map((x) => ({ c: byChunk.get(x.id), score: x.score })).filter((x) => x.c && !have.has(x.c.id) && byId[x.c.iid]);
       box.innerHTML = `<div class="rs-sec"><h2><i></i>AI: பொருண்மையில் தொடர்புடையவை</h2>${rel.length ? groupsHtml(rel, m, true) : '<p class="rs-note">கூடுதலாகத் தொடர்புடைய பகுதிகள் இல்லை.</p>'}</div>`;
-    } catch {
+    } catch (err) {
       if (my !== seq) return;
-      box.innerHTML = `<div class="rs-sec"><h2><i></i>AI: பொருண்மையில் தொடர்புடையவை</h2><p class="rs-note">AI தேடல் தளம் Cloudflare-ல் வெளியிடப்பட்டு, தேடல் குறியீடு புதுப்பிக்கப்பட்ட பிறகே இயங்கும். இப்போது சொல் அடிப்படைத் தேடல் மட்டும் கிடைக்கிறது.</p></div>`;
+      const why = err.message === "429" ? "ஒரே நேரத்தில் பலர் தேடுகிறார்கள். ஒரு நிமிடம் கழித்து மீண்டும் தேடுங்கள்." : "தொடர்புடைய பகுதிகளை இப்போது காட்ட இயலவில்லை. சொல் வரும் இடங்கள் மேலே உள்ளன.";
+      box.innerHTML = `<div class="rs-sec"><h2><i></i>AI: பொருண்மையில் தொடர்புடையவை</h2><p class="rs-note">${why}</p></div>`;
     }
   }
 

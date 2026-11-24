@@ -557,7 +557,7 @@ a:hover>.story .icon{transform:translateX(4px)}
 .iv-head .by .v{color:var(--foreground)}
 
 .gcard .by{margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:.1rem .6rem;font-size:17px;color:var(--foreground)}
-.gcard .by span{color:var(--primary-text)}
+.gcard .by span:not(.av){color:var(--primary-text)}
 
 /* ===== முகப்பு: hero + 3 அட்டைகள் முதல் திரையில்; இன்றைய வரிகள் கீழே (scroll) ===== */
 .page-grid.solo{display:block;min-height:0}
@@ -976,7 +976,7 @@ a:hover>.story .icon{transform:translateX(4px)}
   .hero .cta{min-height:44px}
   .cards3 .more{padding:.5rem 0}
 }
-main[tabindex="-1"]:focus{outline:none}
+#main:focus{outline:none}
 
 /* ===================================================================
    நேர்காணல் எடுத்தவர்கள்: வட்டப் படங்கள், சிப்கள், தனிப் பக்கம்
@@ -991,8 +991,8 @@ main[tabindex="-1"]:focus{outline:none}
 .iv-head .by .by-people{align-items:center}
 .pchips{display:flex;flex-wrap:wrap;gap:.6rem 1.25rem}
 .pchip{display:inline-flex;align-items:center;gap:.6rem;min-height:44px;font-size:19px;color:var(--foreground)}
-a.pchip span{border-bottom:1px solid color-mix(in oklch,var(--primary) 55%,transparent);transition:border-color .2s,color .2s}
-a.pchip:hover span{color:var(--primary-text);border-bottom-color:var(--primary)}
+a.pchip span:not(.av){border-bottom:1px solid color-mix(in oklch,var(--primary) 55%,transparent);transition:border-color .2s,color .2s}
+a.pchip:hover span:not(.av){color:var(--primary-text);border-bottom-color:var(--primary)}
 a.pchip:hover .av{box-shadow:0 0 0 2px var(--background),0 0 0 4px var(--primary)}
 
 /* அட்டைகளில்: சிறிய படங்கள் ஒன்றின் மேல் ஒன்று */

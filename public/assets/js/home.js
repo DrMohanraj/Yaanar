@@ -27,8 +27,8 @@ Y.boot((ctx) => {
 
   document.title = `${site.title} — ${site.tagline || "நேர்காணல் இதழ்"}`;
   app.innerHTML = `${Y.topbar(ctx, "")}<div class="page-grid solo">
-    <main id="main" tabindex="-1">
-      <section class="hero">
+    <main>
+      <section class="hero" id="main" tabindex="-1">
         <div class="hero-text">
           <p class="label hero-kicker">${esc(site.heroKicker || "")}</p>
           <span class="rule" style="margin-top:.6rem"></span>

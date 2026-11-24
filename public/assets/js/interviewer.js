@@ -8,7 +8,7 @@ Y.boot((ctx) => {
 
   if (!p) {
     document.title = `நேர்கண்டவர் கிடைக்கவில்லை — ${site.title}`;
-    app.innerHTML = `${Y.topbar(ctx, "")}
+    app.innerHTML = `${Y.topbar(ctx, "interviewer")}
       <main id="main" tabindex="-1" class="person-page">
         <div class="pp-missing"><h1>இந்த நேர்கண்டவர் பற்றிய பக்கம் இல்லை</h1>
           <p class="muted">இணைப்பு மாறியிருக்கலாம். எல்லா நேர்காணல்களையும் தொகுப்பில் பார்க்கலாம்.</p>
@@ -21,7 +21,7 @@ Y.boot((ctx) => {
   const others = (iv) => Y.people(iv).filter((x) => x.id !== p.id);
   document.title = `${p.name} — நேர்கண்டவர் | ${site.title}`;
 
-  app.innerHTML = `${Y.topbar(ctx, "")}
+  app.innerHTML = `${Y.topbar(ctx, "interviewer")}
     <main id="main" tabindex="-1" class="person-page">
       <header class="pp-head">
         ${Y.avatar(p, "xl")}

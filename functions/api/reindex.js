@@ -16,7 +16,7 @@ export async function onRequestPost({ request, env }) {
     const chunks = interviews.flatMap((iv) => (iv.qa || []).map((x, i) => ({ id: `${iv.id}#${i + 1}`, iid: iv.id, n: i + 1, q: x.q || "", a: x.a || "", hl: x.hl || "" })));
 
     // 1) சொல் குறியீடு
-    const idx = await ghGet(env, `${SITE_DIR}/data/search-index.json`);
+    const idx = await ghGet(env, `${SITE_DIR}/data/search-index.json`, { shaOnly: true });
     await ghPut(env, `${SITE_DIR}/data/search-index.json`, {
       text: JSON.stringify({ version: 1, built: new Date().toISOString(), chunks }),
       sha: idx?.sha, message: "admin: reindex (search-index)",
@@ -36,7 +36,7 @@ export async function onRequestPost({ request, env }) {
         });
         embedded += part.length;
       }
-      const emb = await ghGet(env, `${SITE_DIR}/data/embeddings.json`);
+      const emb = await ghGet(env, `${SITE_DIR}/data/embeddings.json`, { shaOnly: true });
       await ghPut(env, `${SITE_DIR}/data/embeddings.json`, {
         text: JSON.stringify({ model: MODEL, dim: items[0]?.v.length || 0, built: new Date().toISOString(), items }),
         sha: emb?.sha, message: "admin: reindex (embeddings)",
@@ -51,9 +51,9 @@ export async function onRequestPost({ request, env }) {
       const keep = new Set();
       const siteSrc = await ghGet(env, `${SITE_DIR}/data/site.json`);
       const roster = siteSrc ? JSON.parse(siteSrc.text).interviewers || [] : [];
-      const nameOf = (x) => (roster.find((p) => p.id === x) || {}).name || x; // id → பெயர்
+      const nameOf = (x) => (roster.find((p) => p.id === x) || {}).name || (/^[a-z0-9][a-z0-9-]*$/.test(x) ? "" : x); // id → பெயர்
       for (const iv of interviews) {
-        const by = (iv.interviewers || []).filter(Boolean).map(nameOf).join(", ");
+        const by = (iv.interviewers || []).filter(Boolean).map(nameOf).filter(Boolean).join(", ");
         for (const [i, x] of (iv.qa || []).entries()) {
           if (!(x.q || x.a)) continue;
           const key = `${iv.id}/q-${String(i + 1).padStart(2, "0")}.md`;
